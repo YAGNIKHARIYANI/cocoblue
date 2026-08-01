@@ -1,0 +1,17 @@
+# Node dependencies
+node_modules/
+npm-debug.log*
+
+# Python cache & virtual environments
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Environment & local OS files
+.DS_Store
+Thumbs.db
+*.log
+
+# Optional: Uncomment below if you don't want to push large sample MP4 files to GitHub
+# videos/*.mp4

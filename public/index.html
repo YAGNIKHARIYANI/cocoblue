@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>કોકોબ્લુ રીલ્સ - અનલિમિટેડ ગુજરાતી વિડિયો સ્ટ્રીમિંગ</title>
+    <meta name="description" content="કોકોબ્લુ ગુજરાતી વર્ટિકલ રીલ્સ વિડિયો પ્લેયર - ઓટો-સ્ક્ર્રોલ, સ્વાઇપ ગેસ્ચર અને ૧ મિનિટ ૨૦ સેકન્ડ યુટ્યુબ એડ પ્લેટફોર્મ.">
+    <!-- Google Fonts (Hind Vadodara & Noto Sans Gujarati support) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Vadodara:wght@400;500;600;700&family=Inter:wght@400;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Application Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- TOP HEADER AD BANNER (GUJARATI) -->
+    <header class="top-ad-banner" id="topAdBanner">
+        <div class="ad-container">
+            <div class="ad-badge"><i class="fa-solid fa-rectangle-ad"></i> કોકોબ્લુ એડ (૧:૨૦)</div>
+            <div class="ad-content">
+                <span class="ad-title" id="topAdTitle">🚀 કોકોબ્લુ હાઇ-સ્પીડ ગુજરાતી મનોરંજન અને મીડિયા સ્ટ્રીમિંગ</span>
+                <span class="ad-subtitle" id="topAdSubtitle">૧ મિનિટ અને ૨૦ સેકન્ડની એડ જુઓ અને તમામ અનલિમિટેડ રીલ્સનો આનંદ માણો.</span>
+            </div>
+            <div class="ad-actions">
+                <button class="ad-cta-btn" id="loadYtAdHeaderBtn">
+                    <span>એડ જુઓ</span> <i class="fa-brands fa-youtube"></i>
+                </button>
+                <button class="ad-close-btn" id="closeTopAdBtn" title="એડ બંધ કરો"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN REEL FEED CONTAINER -->
+    <main class="app-layout">
+        
+        <!-- SIDE NAVIGATION & CONTROLS (DESKTOP) -->
+        <aside class="desktop-side-panel left-panel">
+            <div class="brand-logo">
+                <i class="fa-solid fa-play-circle neon-icon"></i>
+                <span class="brand-name">કોકો<span class="highlight">બ્લુ</span></span>
+            </div>
+            <div class="nav-hints">
+                <div class="hint-item"><i class="fa-solid fa-computer-mouse"></i> માઉસ વ્હીલથી નવી રીલ્સ જુઓ</div>
+                <div class="hint-item"><i class="fa-solid fa-keyboard"></i> કીબોર્ડ Up / Down એરો કી</div>
+                <div class="hint-item"><i class="fa-solid fa-hand-pointer"></i> મોબાઇલમાં ઉપર સ્વાઇપ કરો</div>
+            </div>
+            <div class="video-counter-card">
+                <i class="fa-solid fa-film"></i>
+                <div class="counter-info">
+                    <span class="counter-label">ગુજરાતી રીલ્સ ક્યુ</span>
+                    <span class="counter-val" id="videoCounterText">0 / 0</span>
+                </div>
+            </div>
+            <button class="control-pill-btn" id="shuffleVideosBtn">
+                <i class="fa-solid fa-shuffle"></i> રીલ્સ શફલ કરો
+            </button>
+            <button class="control-pill-btn trigger-ad-pill" id="manualAdTriggerBtn">
+                <i class="fa-brands fa-youtube"></i> ૧:૨૦ મિનિટ ઈન-એપ એડ
+            </button>
+            <button class="control-pill-btn trigger-redirect-pill" id="externalRedirectBtn">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> યુટ્યુબ રિડાયરેક્ટ
+            </button>
+        </aside>
+
+        <!-- MIDDLE VIDEO PLAYER WRAPPER -->
+        <section class="reel-viewport" id="reelViewport">
+
+            <!-- 1M 20S AD TIMER & LOCK HUD WIDGET -->
+            <div class="ad-timer-widget" id="adTimerWidget">
+                <div class="timer-ring-container">
+                    <svg class="timer-svg" viewBox="0 0 36 36">
+                        <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                        <path class="circle-progress" id="timerProgressCircle" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                    </svg>
+                    <span class="timer-seconds" id="timerCount">1:20</span>
+                </div>
+                <div class="timer-details">
+                    <span class="timer-title" id="timerTitleDisplay"><i class="fa-solid fa-lock"></i> ૧:૨૦ મિનિટ લોક</span>
+                    <span class="timer-subtext" id="timerSubtextDisplay">નવી એડ: 1:20</span>
+                </div>
+                <button class="timer-pause-btn" id="timerPauseBtn" title="પોઝ / પ્લે પિન">
+                    <i class="fa-solid fa-pause"></i>
+                </button>
+            </div>
+
+            <!-- UNMUTE SOUND FLOATING OVERLAY -->
+            <div class="unmute-banner" id="unmuteBanner">
+                <i class="fa-solid fa-volume-xmark"></i>
+                <span>અવાજ ચાલુ કરવા માટે અહીં ટૅપ કરો</span>
+                <i class="fa-solid fa-bolt"></i>
+            </div>
+
+            <!-- REEL CARD -->
+            <div class="reel-card" id="reelCard">
+                <!-- Ambient Glow Background -->
+                <div class="ambient-glow" id="ambientGlow"></div>
+
+                <!-- Local Video Element (NO loop attribute so 'ended' event fires reliably for Auto-Scroll) -->
+                <video class="reel-video" id="reelVideo" playsinline preload="metadata" muted>
+                    તમારું બ્રાઉઝર વિડિયો સપોર્ટ કરતું નથી.
+                </video>
+
+                <!-- Embedded YouTube Video Container (Ad Mode with Autoplay Permissions) -->
+                <div class="yt-ad-iframe-container" id="ytAdContainer">
+                    <iframe id="ytAdIframe" src="" title="કોકોબ્લુ સ્પોન્સર્ડ વિડિયો એડ" allow="autoplay; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+
+                <!-- Ad Lock Overlay Screen -->
+                <div class="ad-lock-overlay" id="adLockOverlay">
+                    <div class="ad-lock-badge">
+                        <i class="fa-solid fa-lock glow-lock"></i>
+                        <span id="adLockTitle">કોકોબ્લુ સ્પોન્સર્ડ યુટ્યુબ એડ (૧:૨૦)</span>
+                    </div>
+                    <p class="ad-lock-message" id="adLockMessage">સ્ક્ર્રોલ અનલોક કરવા માટે કૃપા કરીને ૧ મિનિટ અને ૨૦ સેકન્ડની સ્પોન્સર્ડ યુટ્યુબ એડ જુઓ!</p>
+                    <div class="lock-countdown-pill" id="lockCountdownPill">
+                        <i class="fa-solid fa-hourglass-half"></i> સ્ક્ર્રોલ અનલોક થશે: <b id="lockSecCount">1:20</b>
+                    </div>
+                </div>
+
+                <!-- Loading Spinner Overlay -->
+                <div class="video-loader" id="videoLoader">
+                    <div class="spinner"></div>
+                    <span>રીલ લોડ થઈ રહી છે...</span>
+                </div>
+
+                <!-- Center Touch / Click Play Pulse Effect -->
+                <div class="center-play-indicator" id="centerPlayIndicator">
+                    <i class="fa-solid fa-play"></i>
+                </div>
+
+                <!-- Video Overlay Details (Title & Status) -->
+                <div class="reel-overlay-bottom" id="reelOverlayBottom">
+                    <div class="video-badge-row">
+                        <span class="live-tag" id="videoSourceTag"><i class="fa-solid fa-circle"></i> ગુજરાતી લોકલ રીલ</span>
+                        <span class="resolution-tag">એચડી ૧૦૮૦p</span>
+                    </div>
+                    <h2 class="video-title" id="videoTitleDisplay">રીલ લોડ થઈ રહી છે...</h2>
+                    <p class="video-filename" id="videoFilenameDisplay">video.mp4</p>
+                    
+                    <!-- Seek Progress Bar -->
+                    <div class="scrubber-container" id="scrubberContainer">
+                        <div class="scrubber-track">
+                            <div class="scrubber-fill" id="scrubberFill"></div>
+                        </div>
+                        <span class="time-display" id="timeDisplay">0:00 / 0:00</span>
+                    </div>
+                </div>
+
+                <!-- Right Side Floating Controls -->
+                <div class="reel-floating-controls">
+                    <button class="action-circle-btn" id="soundToggleBtn" title="અવાજ ચાલુ / બંધ">
+                        <i class="fa-solid fa-volume-xmark" id="soundIcon"></i>
+                    </button>
+                    <button class="action-circle-btn" id="playPauseToggleBtn" title="પ્લે / પોઝ">
+                        <i class="fa-solid fa-pause" id="playPauseIcon"></i>
+                    </button>
+                    <button class="action-circle-btn" id="nextVideoBtn" title="આગામી રીલ (ઉપર સ્વાઇપ કરો)">
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                    <button class="action-circle-btn" id="prevVideoBtn" title="પાછલી રીલ (નીચે સ્વાઇપ કરો)">
+                        <i class="fa-solid fa-chevron-up"></i>
+                    </button>
+                    <button class="action-circle-btn" id="fullscreenBtn" title="ફુલસ્ક્રીન">
+                        <i class="fa-solid fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Swipe Up / Down Visual Gesture Indicator (Mobile/Tablet) -->
+            <div class="swipe-hint-container" id="swipeHintContainer">
+                <i class="fa-solid fa-angles-up anim-bounce" id="swipeHintIcon"></i>
+                <span id="swipeHintText">બીજી રીલ જોવા માટે ઉપર સ્વાઇપ કરો</span>
+            </div>
+
+        </section>
+
+        <!-- SIDE CONTROLS & SETTINGS (DESKTOP RIGHT) -->
+        <aside class="desktop-side-panel right-panel">
+            <div class="panel-card">
+                <h3><i class="fa-brands fa-youtube"></i> કોકોબ્લુ યુટ્યુબ એડ્સ</h3>
+                <p class="panel-desc">યુટ્યુબ એડ્સ પ્લે થશે. ૧ મિનિટ અને ૨૦ સેકન્ડ સુધી સ્ક્ર્રોલ લોક રહેશે:</p>
+                <ul class="yt-link-list">
+                    <li><a href="https://youtu.be/kChKciLOaRM?si=mxKwbABXSUXjmMag" target="_blank"><i class="fa-brands fa-youtube"></i> યુટ્યુબ રીલ #૧ ખોલો</a></li>
+                    <li><a href="https://youtu.be/hjdnmgDeR7Q?si=GR7N6xCAYt4--0MD" target="_blank"><i class="fa-brands fa-youtube"></i> યુટ્યુબ રીલ #૨ ખોલો</a></li>
+                    <li><a href="https://youtu.be/tII7mfnLUms?si=7o9oyQ2KTrbN_6ms" target="_blank"><i class="fa-brands fa-youtube"></i> યુટ્યુબ રીલ #૩ ખોલો</a></li>
+                </ul>
+            </div>
+
+            <div class="panel-card">
+                <h3><i class="fa-solid fa-sliders"></i> સેટિંગ્સ</h3>
+                <div class="setting-row">
+                    <span>વિડિયો પૂરો થતાં ઓટો-સ્ક્ર્રોલ</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="autoScrollToggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-row">
+                    <span>બેકગ્રાઉન્ડ ગ્લો લાઇટ</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="ambientGlowToggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </aside>
+
+    </main>
+
+    <!-- BOTTOM FOOTER CUSTOM AD BANNER (GUJARATI) -->
+    <footer class="bottom-ad-banner" id="bottomAdBanner">
+        <div class="ad-container">
+            <div class="bottom-ad-left">
+                <span class="bottom-ad-badge"><i class="fa-solid fa-bolt"></i> કોકોબ્લુ મીડિયા</span>
+                <span class="bottom-ad-text" id="bottomAdText">🔥 ૧ મિનિટ ૨૦ સેકન્ડની એડ જુઓ અને નવી ગુજરાતી રીલ્સ અનલોક કરો!</span>
+            </div>
+            <div class="bottom-ad-right">
+                <button class="bottom-ad-btn" id="bottomAdBtn">
+                    <span>એડ પ્લે કરો</span> <i class="fa-brands fa-youtube"></i>
+                </button>
+                <button class="ad-close-btn" id="closeBottomAdBtn" title="એડ બંધ કરો"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCROLL LOCKED WARNING TOAST (GUJARATI) -->
+    <div class="toast-notification" id="scrollLockToast">
+        <div class="toast-content">
+            <i class="fa-solid fa-lock toast-icon-lock"></i>
+            <div class="toast-text">
+                <strong id="lockToastHeader">🔒 સ્ક્ર્રોલ લોક છે!</strong>
+                <span id="lockToastSub">કૃપા કરીને આગળ વધવા માટે <b id="toastLockSecs">૧:૨૦</b> મિનિટની યુટ્યુબ એડ પૂરી જુઓ.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXTERNAL TAB REDIRECT TOAST NOTIFICATION (GUJARATI) -->
+    <div class="toast-notification" id="externalRedirectToast">
+        <div class="toast-content">
+            <i class="fa-brands fa-youtube toast-icon-lock" style="color:#ff0000"></i>
+            <div class="toast-text">
+                <strong>કોકોબ્લુ સ્પોન્સર્ડ યુટ્યુબ એડ</strong>
+                <span>૩ સેકન્ડમાં યુટ્યુબ પ્રોમો રીલ ખોલાઈ રહી છે...</span>
+            </div>
+            <button class="toast-cancel-btn" id="cancelRedirectBtn">રદ કરો</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/ad-redirect.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
