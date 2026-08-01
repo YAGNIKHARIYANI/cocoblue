@@ -15,3 +15,6 @@ Thumbs.db
 
 # Optional: Uncomment below if you don't want to push large sample MP4 files to GitHub
 # videos/*.mp4
+
+# Local Netlify folder
+.netlify

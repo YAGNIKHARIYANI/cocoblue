@@ -1,7 +1,7 @@
 import os
 import urllib.request
 
-VIDEOS_DIR = os.path.join(os.path.dirname(__file__), 'videos')
+VIDEOS_DIR = os.path.join(os.path.dirname(__file__), 'public', 'videos')
 
 SAMPLE_VIDEOS = [
     {
