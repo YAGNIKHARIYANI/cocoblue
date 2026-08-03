@@ -7,7 +7,7 @@ class ReelApp {
     constructor() {
         this.rawVideoList = [];
         this.rawStandardList = [];
-        this.rawMpdList = [];
+        this.rawMp4List = [];
         this.shuffledQueue = [];
         this.currentIndex = 0;
         this.isMuted = true;
@@ -352,9 +352,9 @@ class ReelApp {
                 if (response.ok) {
                     const data = await response.json();
                     if (Array.isArray(data) && data.length > 0) {
-                        // Filter out any MPD videos (if they were already merged by the local server)
+                        // Filter out any MPD/MP4 videos (if they were already merged by the local server)
                         // to ensure we have clean list of standard videos
-                        standardData = data.filter(item => !item.isMPD);
+                        standardData = data.filter(item => !item.isMPD && !item.id.startsWith('mp4_'));
                         console.log(`[CocoBlue Gujarati] ${standardData.length} standard video links loaded! (source: ${url})`);
                         break;
                     }
@@ -362,10 +362,10 @@ class ReelApp {
             } catch (err) {}
         }
 
-        // Fetch MPD Videos
-        let mpdData = [];
-        const mpdEndpoints = ['/data/mpd_links.json', 'data/mpd_links.json', '/public/data/mpd_links.json'];
-        for (const url of mpdEndpoints) {
+        // Fetch MP4 Videos
+        let mp4Data = [];
+        const mp4Endpoints = ['/data/mp4.json', 'data/mp4.json', '/public/data/mp4.json'];
+        for (const url of mp4Endpoints) {
             try {
                 const response = await fetch(url);
                 if (response.ok) {
@@ -373,22 +373,22 @@ class ReelApp {
                     const videosObj = data.videos || {};
                     const keys = Object.keys(videosObj);
                     if (keys.length > 0) {
-                        mpdData = keys.map(key => {
+                        mp4Data = keys.map(key => {
                             const item = videosObj[key];
                             return {
-                                id: `mpd_${key}`,
+                                id: `mp4_${key}`,
                                 reelId: key,
-                                filename: `${item.hash_id || ''}.mpd`,
-                                title: `ગુજરાતી શોર્ટ રીલ #${item.hash_id || ''}`,
+                                filename: `${item.post_id || ''}_${item.media_id || ''}.mp4`,
+                                title: `ગુજરાતી શોર્ટ રીલ #${item.post_id || ''}`,
                                 streamUrl: item.url || '',
                                 hdLink: item.url || '',
                                 sdLink: item.url || '',
                                 views: String(Math.floor(Math.random() * 2500000) + 500000),
                                 publishTime: "2026-07-04T00:47:17.000Z",
-                                isMPD: true
+                                isMPD: false
                             };
                         });
-                        console.log(`[CocoBlue Gujarati] ${mpdData.length} MPD video links loaded! (source: ${url})`);
+                        console.log(`[CocoBlue Gujarati] ${mp4Data.length} MP4 video links loaded! (source: ${url})`);
                         break;
                     }
                 }
@@ -396,10 +396,10 @@ class ReelApp {
         }
 
         this.rawStandardList = standardData;
-        this.rawMpdList = mpdData;
+        this.rawMp4List = mp4Data;
 
-        if (this.rawStandardList.length === 0 && this.rawMpdList.length === 0) {
-            console.error('[CocoBlue Gujarati] Standard and MPD video data fetch failed!');
+        if (this.rawStandardList.length === 0 && this.rawMp4List.length === 0) {
+            console.error('[CocoBlue Gujarati] Standard and MP4 video data fetch failed!');
             if (window.logFirebaseEvent) {
                 window.logFirebaseEvent('api_fetch_error', {});
             }
@@ -414,7 +414,7 @@ class ReelApp {
     }
 
     shuffleQueue() {
-        if ((!this.rawStandardList || this.rawStandardList.length === 0) && (!this.rawMpdList || this.rawMpdList.length === 0)) return;
+        if ((!this.rawStandardList || this.rawStandardList.length === 0) && (!this.rawMp4List || this.rawMp4List.length === 0)) return;
 
         // Shuffle Standard list
         const stdShuffled = [...this.rawStandardList];
@@ -423,21 +423,21 @@ class ReelApp {
             [stdShuffled[i], stdShuffled[j]] = [stdShuffled[j], stdShuffled[i]];
         }
 
-        // Shuffle MPD list
-        const mpdShuffled = [...this.rawMpdList];
-        for (let i = mpdShuffled.length - 1; i > 0; i--) {
+        // Shuffle MP4 list
+        const mp4Shuffled = [...this.rawMp4List];
+        for (let i = mp4Shuffled.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [mpdShuffled[i], mpdShuffled[j]] = [mpdShuffled[j], mpdShuffled[i]];
+            [mp4Shuffled[i], mp4Shuffled[j]] = [mp4Shuffled[j], mp4Shuffled[i]];
         }
 
-        // Interleave them: 1 MPD, 2 Standard
+        // Interleave them: 1 MP4, 2 Standard
         const interleaved = [];
-        if (mpdShuffled.length > 0 && stdShuffled.length > 0) {
-            let mpdIdx = 0;
+        if (mp4Shuffled.length > 0 && stdShuffled.length > 0) {
+            let mp4Idx = 0;
             for (let i = 0; i < stdShuffled.length; i += 2) {
-                // Add 1 MPD video (wrap around if we run out)
-                interleaved.push(mpdShuffled[mpdIdx % mpdShuffled.length]);
-                mpdIdx++;
+                // Add 1 MP4 video (wrap around if we run out)
+                interleaved.push(mp4Shuffled[mp4Idx % mp4Shuffled.length]);
+                mp4Idx++;
 
                 // Add up to 2 Standard videos
                 if (i < stdShuffled.length) {
@@ -451,7 +451,7 @@ class ReelApp {
         } else if (stdShuffled.length > 0) {
             this.shuffledQueue = stdShuffled;
         } else {
-            this.shuffledQueue = mpdShuffled;
+            this.shuffledQueue = mp4Shuffled;
         }
 
         this.currentIndex = 0;

@@ -12,7 +12,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PUBLIC_DIR = os.path.join(BASE_DIR, 'public')
 VIDEOS_DIR = os.path.join(BASE_DIR, 'videos')
 JSON_DATA_PATH = os.path.join(BASE_DIR, 'data', 'videos.json')
-MPD_DATA_PATH = os.path.join(PUBLIC_DIR, 'data', 'mpd_links.json')
+MP4_DATA_PATH = os.path.join(PUBLIC_DIR, 'data', 'mp4.json')
 
 # Ensure directories exist
 os.makedirs(PUBLIC_DIR, exist_ok=True)
@@ -78,51 +78,52 @@ class ReelRequestHandler(BaseHTTPRequestHandler):
             except Exception as e:
                 print(f"[API Error] Failed to read videos.json: {e}")
 
-        # 2. Load MPD videos from mpd loader/mpd_links.json
-        if os.path.exists(MPD_DATA_PATH):
+        # 2. Load MP4 videos from public/data/mp4.json
+        mp4_videos = []
+        if os.path.exists(MP4_DATA_PATH):
             try:
-                with open(MPD_DATA_PATH, 'r', encoding='utf-8') as f:
-                    mpd_data = json.load(f)
-                videos_dict = mpd_data.get("videos", {})
+                with open(MP4_DATA_PATH, 'r', encoding='utf-8') as f:
+                    mp4_data = json.load(f)
+                videos_dict = mp4_data.get("videos", {})
                 for key, item in videos_dict.items():
-                    mpd_videos.append({
-                        "id": f"mpd_{key}",
+                    mp4_videos.append({
+                        "id": f"mp4_{key}",
                         "reelId": key,
-                        "filename": f"{item.get('hash_id', '')}.mpd",
-                        "title": f"ગુજરાતી MPD રીલ #{item.get('hash_id', '')}",
+                        "filename": f"{item.get('post_id', '')}_{item.get('media_id', '')}.mp4",
+                        "title": f"ગુજરાતી શોર્ટ રીલ #{item.get('post_id', '')}",
                         "streamUrl": item.get("url", ""),
                         "hdLink": item.get("url", ""),
                         "sdLink": item.get("url", ""),
                         "views": str(random.randint(500000, 3000000)),
                         "publishTime": "2026-07-04T00:47:17.000Z",
-                        "isMPD": True
+                        "isMPD": False
                     })
-                if mpd_videos:
-                    random.shuffle(mpd_videos)
-                    print(f"[API] Loaded and shuffled {len(mpd_videos)} MPD videos from mpd_links.json")
+                if mp4_videos:
+                    random.shuffle(mp4_videos)
+                    print(f"[API] Loaded and shuffled {len(mp4_videos)} MP4 videos from mp4.json")
             except Exception as e:
-                print(f"[API Error] Failed to read mpd_links.json: {e}")
+                print(f"[API Error] Failed to read mp4.json: {e}")
 
-        # 3. Interleave them in the pattern: 1 MPD, 2 Standard
-        if mpd_videos and standard_videos:
-            mpd_idx = 0
+        # 3. Interleave them in the pattern: 1 MP4, 2 Standard
+        if mp4_videos and standard_videos:
+            mp4_idx = 0
             for i in range(0, len(standard_videos), 2):
-                # Add 1 MPD video (wrap around if we run out)
-                video_files.append(mpd_videos[mpd_idx % len(mpd_videos)])
-                mpd_idx += 1
+                # Add 1 MP4 video (wrap around if we run out)
+                video_files.append(mp4_videos[mp4_idx % len(mp4_videos)])
+                mp4_idx += 1
                 
                 # Add up to 2 standard videos
                 if i < len(standard_videos):
                     video_files.append(standard_videos[i])
                 if i + 1 < len(standard_videos):
                     video_files.append(standard_videos[i + 1])
-            print(f"[API] Constructed interleaved queue of {len(video_files)} videos (1 MPD, 2 Standard pattern)")
+            print(f"[API] Constructed interleaved queue of {len(video_files)} videos (1 MP4, 2 Standard pattern)")
         elif standard_videos:
             video_files = standard_videos
             print(f"[API Fallback] Serving {len(video_files)} standard videos only")
-        elif mpd_videos:
-            video_files = mpd_videos
-            print(f"[API Fallback] Serving {len(video_files)} MPD videos only")
+        elif mp4_videos:
+            video_files = mp4_videos
+            print(f"[API Fallback] Serving {len(video_files)} MP4 videos only")
 
         # Fallback to local ./videos directory if both JSONs are missing or empty
         if not video_files and os.path.exists(VIDEOS_DIR):
