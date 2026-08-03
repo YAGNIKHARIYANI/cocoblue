@@ -328,6 +328,7 @@ body.user-idle .proceed-after-ad-btn,
     display: flex;
     justify-content: center;
     align-items: center;
+    touch-action: none; /* Prevents mobile browser pull-to-refresh & page bounce, securing swipe gesture capture */
 }
 
 .reel-card {
@@ -342,6 +343,30 @@ body.user-idle .proceed-after-ad-btn,
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.25s ease;
+}
+
+/* Smooth visual slide transitions for Reel Card */
+.reel-card.slide-out-up {
+    transform: translateY(-100%);
+    opacity: 0;
+}
+
+.reel-card.slide-in-up {
+    transform: translateY(100%);
+    opacity: 0;
+    transition: none !important;
+}
+
+.reel-card.slide-out-down {
+    transform: translateY(100%);
+    opacity: 0;
+}
+
+.reel-card.slide-in-down {
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: none !important;
 }
 
 .ambient-glow {

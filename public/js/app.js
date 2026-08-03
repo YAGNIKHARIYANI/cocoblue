@@ -27,7 +27,7 @@ class ReelApp {
 
         // Wheel Scroll throttling
         this.lastWheelTime = 0;
-        this.wheelThrottleMs = 700;
+        this.wheelThrottleMs = 400;
 
         // 5-Second Inactivity UI Overlay Auto-Hide Timer
         this.idleTimeout = null;
@@ -779,6 +779,30 @@ class ReelApp {
         }
     }
 
+    animateTransition(direction, callback) {
+        if (!this.reelCard) {
+            callback();
+            return;
+        }
+
+        const slideOutClass = direction === 'next' ? 'slide-out-up' : 'slide-out-down';
+        const slideInClass = direction === 'next' ? 'slide-in-up' : 'slide-in-down';
+
+        this.reelCard.classList.add(slideOutClass);
+
+        setTimeout(() => {
+            callback();
+
+            this.reelCard.classList.remove(slideOutClass);
+            this.reelCard.classList.add(slideInClass);
+
+            // Force reflow
+            this.reelCard.offsetHeight;
+
+            this.reelCard.classList.remove(slideInClass);
+        }, 250);
+    }
+
     nextReel() {
         if (this.checkScrollLocked()) return;
         if (this.isTransitioning) return;
@@ -793,20 +817,22 @@ class ReelApp {
             window.logFirebaseEvent('reel_scrolled', { direction: 'next', new_index: this.currentIndex + 1 });
         }
 
-        if (this.isAdMode) {
-            this.exitYouTubeAdMode();
-            this.loadCurrentReel();
-        } else {
-            this.currentIndex++;
-            if (this.currentIndex >= this.shuffledQueue.length) {
-                this.shuffleQueue();
+        this.animateTransition('next', () => {
+            if (this.isAdMode) {
+                this.exitYouTubeAdMode();
+                this.loadCurrentReel();
+            } else {
+                this.currentIndex++;
+                if (this.currentIndex >= this.shuffledQueue.length) {
+                    this.shuffleQueue();
+                }
+                this.loadCurrentReel();
             }
-            this.loadCurrentReel();
-        }
+        });
 
         setTimeout(() => {
             this.isTransitioning = false;
-        }, 200);
+        }, 550);
     }
 
     prevReel() {
@@ -823,21 +849,23 @@ class ReelApp {
             window.logFirebaseEvent('reel_scrolled', { direction: 'prev', new_index: this.currentIndex - 1 });
         }
 
-        if (this.isAdMode) {
-            this.exitYouTubeAdMode();
-            this.loadCurrentReel();
-        } else {
-            if (this.currentIndex > 0) {
-                this.currentIndex--;
+        this.animateTransition('prev', () => {
+            if (this.isAdMode) {
+                this.exitYouTubeAdMode();
+                this.loadCurrentReel();
             } else {
-                this.currentIndex = this.shuffledQueue.length - 1;
+                if (this.currentIndex > 0) {
+                    this.currentIndex--;
+                } else {
+                    this.currentIndex = this.shuffledQueue.length - 1;
+                }
+                this.loadCurrentReel();
             }
-            this.loadCurrentReel();
-        }
+        });
 
         setTimeout(() => {
             this.isTransitioning = false;
-        }, 200);
+        }, 550);
     }
 
     checkScrollLocked() {
