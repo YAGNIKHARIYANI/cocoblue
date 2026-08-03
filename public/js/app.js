@@ -14,6 +14,7 @@ class ReelApp {
         this.isPlaying = false;
         this.isTransitioning = false;
         this.userForcedQuality = null;
+        this.ageVerified = false;
 
         // Ad Mode & Scroll Lock Flags
         this.isAdMode = false;
@@ -106,9 +107,36 @@ class ReelApp {
         // Settings
         this.autoScrollToggle = document.getElementById('autoScrollToggle');
         this.ambientGlowToggle = document.getElementById('ambientGlowToggle');
+
+        // Age Verification Modal Elements
+        this.ageGateOverlay = document.getElementById('ageGateOverlay');
+        this.ageGateYesBtn = document.getElementById('ageGateYesBtn');
+        this.ageGateNoBtn = document.getElementById('ageGateNoBtn');
     }
 
     initEventListeners() {
+        // Age Verification Modal Button Handlers
+        if (this.ageGateYesBtn) {
+            this.ageGateYesBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.ageVerified = true;
+                if (this.ageGateOverlay) {
+                    this.ageGateOverlay.classList.add('hidden');
+                }
+                this.loadCurrentReel();
+                if (this.unmuteBanner && this.isMuted) {
+                    this.unmuteBanner.style.display = 'flex';
+                }
+            });
+        }
+
+        if (this.ageGateNoBtn) {
+            this.ageGateNoBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                window.location.href = 'https://www.google.com';
+            });
+        }
+
         if (this.unmuteBanner) {
             this.unmuteBanner.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -502,6 +530,8 @@ class ReelApp {
     }
 
     loadCurrentReel() {
+        if (!this.ageVerified) return;
+
         if (this.isAdMode || (window.adRedirectManager && window.adRedirectManager.isAdActive)) {
             return;
         }
