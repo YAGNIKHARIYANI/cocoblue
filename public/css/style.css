@@ -1,0 +1,1030 @@
+/* ==========================================================================
+   CocoBlue Gujarati Reels - Design System & Stylesheet
+   Glassmorphism Aesthetic, Responsive Layout, Fullscreen 5s Auto-Hide & YouTube Ad View
+   ========================================================================== */
+
+:root {
+    --bg-dark: #090a0f;
+    --card-bg: rgba(18, 20, 29, 0.75);
+    --card-border: rgba(255, 255, 255, 0.12);
+    --primary-neon: #00f2fe;
+    --secondary-neon: #4facfe;
+    --accent-red: #ff0844;
+    --accent-gold: #ffb199;
+    --text-main: #ffffff;
+    --text-muted: #a0a5b5;
+    --font-family: 'Hind Vadodara', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --top-ad-height: 60px;
+    --bottom-ad-height: 60px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: var(--font-family);
+    min-height: 100vh;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* ==========================================================================
+   HIDE TOP & BOTTOM AD BANNERS DURING YOUTUBE AD MODE
+   ========================================================================== */
+body.ad-mode-active .top-ad-banner,
+body.ad-mode-active .bottom-ad-banner {
+    display: none !important;
+}
+
+/* ==========================================================================
+   AUTO-HIDE UI OVERLAY & BUTTONS AFTER 5 SECONDS OF INACTIVITY (NORMAL & FULLSCREEN)
+   ========================================================================== */
+body.user-idle .reel-floating-controls,
+body.user-idle .reel-overlay-bottom,
+body.user-idle .swipe-hint-container,
+body.user-idle .desktop-side-panel,
+body.user-idle .top-ad-banner,
+body.user-idle .bottom-ad-banner,
+body.user-idle .ad-timer-widget,
+body.user-idle .unmute-banner,
+body.user-idle .proceed-after-ad-btn,
+.reel-card.user-idle .reel-floating-controls,
+.reel-card.user-idle .reel-overlay-bottom,
+.reel-card.user-idle .swipe-hint-container,
+.reel-card.user-idle .proceed-after-ad-btn,
+:fullscreen.user-idle .reel-floating-controls,
+:fullscreen.user-idle .reel-overlay-bottom {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Smooth transition for normal state */
+.reel-floating-controls,
+.reel-overlay-bottom,
+.swipe-hint-container,
+.desktop-side-panel,
+.top-ad-banner,
+.bottom-ad-banner,
+.ad-timer-widget,
+.unmute-banner {
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* ==========================================================================
+   TOP & BOTTOM GUJARATI AD BANNERS
+   ========================================================================== */
+.top-ad-banner, .bottom-ad-banner {
+    width: 100%;
+    background: rgba(10, 14, 26, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--card-border);
+    z-index: 100;
+    position: relative;
+}
+
+.bottom-ad-banner {
+    border-bottom: none;
+    border-top: 1px solid var(--card-border);
+}
+
+.ad-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.ad-badge, .bottom-ad-badge {
+    background: linear-gradient(135deg, var(--accent-red), #ff4e50);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+.ad-content {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.ad-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--primary-neon);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.ad-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.ad-actions, .bottom-ad-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ad-cta-btn, .bottom-ad-btn {
+    background: linear-gradient(135deg, var(--primary-neon), var(--secondary-neon));
+    color: #000;
+    font-weight: 700;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ad-cta-btn:hover, .bottom-ad-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 242, 254, 0.4);
+}
+
+.ad-close-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.ad-close-btn:hover {
+    color: #fff;
+}
+
+/* ==========================================================================
+   APP LAYOUT & REEL VIEWPORT
+   ========================================================================== */
+.app-layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 10px;
+    gap: 30px;
+    position: relative;
+}
+
+.desktop-side-panel {
+    flex: 1;
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.left-panel {
+    align-items: flex-start;
+}
+
+.right-panel {
+    align-items: flex-end;
+}
+
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.8rem;
+    font-weight: 800;
+}
+
+.neon-icon {
+    color: var(--primary-neon);
+    filter: drop-shadow(0 0 8px var(--primary-neon));
+}
+
+.brand-name {
+    color: #fff;
+}
+
+.brand-name .highlight {
+    color: var(--primary-neon);
+}
+
+.nav-hints {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.hint-item {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.video-counter-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.video-counter-card i {
+    font-size: 1.5rem;
+    color: var(--primary-neon);
+}
+
+.counter-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.counter-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.counter-val {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.control-pill-btn {
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s ease;
+}
+
+.control-pill-btn:hover {
+    border-color: var(--primary-neon);
+    background: rgba(0, 242, 254, 0.1);
+}
+
+.trigger-ad-pill {
+    border-color: rgba(255, 8, 68, 0.4);
+    background: rgba(255, 8, 68, 0.1);
+}
+
+.trigger-ad-pill i {
+    color: var(--accent-red);
+}
+
+.trigger-redirect-pill {
+    border-color: rgba(79, 172, 254, 0.4);
+}
+
+/* ==========================================================================
+   REEL CARD & PLAYER VIEWPORT
+   ========================================================================== */
+.reel-viewport {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    height: calc(100vh - 40px);
+    min-height: 580px;
+    max-height: 820px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.reel-card {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--card-border);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 242, 254, 0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.ambient-glow {
+    position: absolute;
+    inset: -20px;
+    background: radial-gradient(circle, rgba(0, 242, 254, 0.25) 0%, rgba(255, 8, 68, 0.15) 50%, transparent 80%);
+    z-index: 1;
+    pointer-events: none;
+    transition: background 1s ease;
+}
+
+.reel-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 2;
+    cursor: pointer;
+}
+
+/* Embedded YouTube Ad Container */
+.yt-ad-iframe-container {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    background: #000;
+    display: none;
+}
+
+.yt-ad-iframe-container.active {
+    display: block;
+}
+
+.yt-ad-iframe-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Ad Lock Overlay Screen */
+.ad-lock-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 15;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(8px);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    text-align: center;
+    gap: 15px;
+}
+
+.ad-lock-overlay.active {
+    display: flex;
+}
+
+.ad-lock-badge {
+    background: rgba(255, 8, 68, 0.2);
+    border: 1px solid var(--accent-red);
+    padding: 8px 16px;
+    border-radius: 20px;
+    color: var(--accent-red);
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ad-lock-message {
+    font-size: 0.95rem;
+    color: #e0e0e0;
+    line-height: 1.4;
+}
+
+.lock-countdown-pill {
+    background: linear-gradient(135deg, var(--accent-red), #ff4e50);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(255, 8, 68, 0.4);
+}
+
+.lock-countdown-pill.unlocked {
+    background: linear-gradient(135deg, #11998e, #38ef7d);
+    box-shadow: 0 4px 15px rgba(56, 239, 125, 0.4);
+}
+
+/* Loader */
+.video-loader {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    color: var(--primary-neon);
+}
+
+.video-loader.active {
+    display: flex;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(0, 242, 254, 0.2);
+    border-top-color: var(--primary-neon);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Center Pulse Icon */
+.center-play-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
+    width: 70px;
+    height: 70px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-size: 1.8rem;
+    z-index: 5;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.center-play-indicator.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Overlay Bottom Info */
+.reel-overlay-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 70%, transparent 100%);
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.video-badge-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.live-tag {
+    background: rgba(0, 242, 254, 0.2);
+    color: var(--primary-neon);
+    border: 1px solid var(--primary-neon);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.live-tag.yt-mode {
+    background: rgba(255, 8, 68, 0.2);
+    color: var(--accent-red);
+    border-color: var(--accent-red);
+}
+
+.resolution-tag {
+    background: rgba(255, 255, 255, 0.15);
+    font-size: 0.72rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.video-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.video-filename {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+/* Scrubber Bar */
+.scrubber-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+.scrubber-track {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.scrubber-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--primary-neon), var(--secondary-neon));
+    border-radius: 2px;
+}
+
+.time-display {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    align-self: flex-end;
+}
+
+/* Right Side Action Controls */
+.reel-floating-controls {
+    position: absolute;
+    right: 15px;
+    bottom: 80px;
+    z-index: 6;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.action-circle-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(18, 20, 29, 0.75);
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.action-circle-btn:hover {
+    transform: scale(1.1);
+    background: var(--primary-neon);
+    color: #000;
+}
+
+/* 1M 20S AD HUD WIDGET */
+.ad-timer-widget {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 25;
+    background: rgba(10, 14, 26, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--card-border);
+    border-radius: 30px;
+    padding: 5px 12px 5px 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.timer-ring-container {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.timer-svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.circle-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.1);
+    stroke-width: 3.8;
+}
+
+.circle-progress {
+    fill: none;
+    stroke: var(--accent-red);
+    stroke-width: 3.8;
+    stroke-linecap: round;
+    transition: stroke-dasharray 0.3s ease;
+}
+
+.timer-seconds {
+    position: absolute;
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+    text-align: center;
+}
+
+.timer-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.timer-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.timer-subtext {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+}
+
+.timer-pause-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 4px;
+}
+
+/* Floating Unmute Banner */
+.unmute-banner {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 25;
+    background: linear-gradient(135deg, var(--accent-red), #ff4e50);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(255, 8, 68, 0.4);
+    animation: pulseGlow 2s infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+}
+
+/* Swipe Hint Indicator */
+.swipe-hint-container {
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.anim-bounce {
+    animation: bounce 1.5s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-6px); }
+    60% { transform: translateY(-3px); }
+}
+
+/* Locked Shake Animation */
+.reel-card.shake-locked {
+    animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+}
+
+/* Side Panels Cards */
+.panel-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 15px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.panel-card h3 {
+    font-size: 0.95rem;
+    color: var(--primary-neon);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.panel-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+.yt-link-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.yt-link-list a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s ease;
+}
+
+.yt-link-list a:hover {
+    color: var(--primary-neon);
+}
+
+.setting-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.82rem;
+}
+
+.toggle-switch {
+    position: relative;
+    width: 40px;
+    height: 22px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: #333;
+    transition: .3s;
+    border-radius: 22px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--primary-neon);
+}
+
+input:checked + .slider:before {
+    transform: translateX(18px);
+}
+
+/* Toast Notifications */
+.toast-notification {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: rgba(10, 14, 26, 0.95);
+    border: 1px solid var(--accent-red);
+    border-radius: 12px;
+    padding: 12px 20px;
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.toast-notification.active {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.toast-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.toast-icon-lock {
+    font-size: 1.4rem;
+    color: var(--accent-red);
+}
+
+.toast-text {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.85rem;
+}
+
+.toast-cancel-btn {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+/* Media Queries for Tablet & Mobile */
+@media (max-width: 992px) {
+    .desktop-side-panel {
+        display: none;
+    }
+
+    .app-layout {
+        padding: 0;
+    }
+
+    .reel-viewport {
+        max-width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        min-height: 100%;
+    }
+
+    .reel-card {
+        border-radius: 0;
+        border: none;
+    }
+}
+
+/* Proceed After Ad Button Styling */
+.proceed-after-ad-btn {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--primary-neon) 0%, var(--secondary-neon) 100%);
+    border: none;
+    padding: 14px 28px;
+    border-radius: 50px;
+    color: #ffffff;
+    font-family: var(--font-family);
+    font-size: 1.15rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(0, 242, 254, 0.6);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    animation: pulse-glow 1.5s infinite alternate;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.proceed-after-ad-btn:hover {
+    box-shadow: 0 0 30px rgba(0, 242, 254, 0.9);
+    transform: translateX(-50%) scale(1.05);
+    color: #ffffff;
+}
+
+.proceed-after-ad-btn:active {
+    transform: translateX(-50%) scale(0.95);
+}
+
+@keyframes pulse-glow {
+    0% {
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.5);
+    }
+    100% {
+        box-shadow: 0 0 30px rgba(0, 242, 254, 0.9);
+    }
+}
+
+/* ==========================================================================
+   RESPONSIVE YOUTUBE AD CONTAINER LAYOUT (NON-FULLSCREEN, TWO CONTAINERS)
+   ========================================================================== */
+.yt-ads-wrapper {
+    position: absolute;
+    top: 42%;
+    left: 15px;
+    right: 15px;
+    transform: translateY(-50%);
+    z-index: 20; /* Sits above the blurred background (z-index 15) */
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+}
+
+body.ad-mode-active .yt-ads-wrapper {
+    display: flex;
+}
+
+.yt-ads-wrapper .yt-ad-iframe-container {
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 8, 68, 0.2);
+    border: 1px solid var(--card-border);
+    background: #000;
+    display: block;
+}
+
+/* Background overlay underneath the YouTube ad */
+body.ad-mode-active .ad-lock-overlay {
+    display: flex !important;
+    justify-content: flex-end; /* Pushes content below the video */
+    align-items: center;
+    padding-bottom: 75px;
+    background: rgba(9, 10, 15, 0.96);
+    backdrop-filter: blur(10px);
+    z-index: 15; /* Sits below the video box (z-index 20) */
+}
+
+/* Custom layout for text and details inside the overlay during active ad */
+body.ad-mode-active .ad-lock-overlay .ad-lock-badge {
+    display: none !important;
+}
+
+body.ad-mode-active .ad-lock-overlay .ad-lock-message {
+    font-size: 1.05rem;
+    color: #ffffff;
+    font-weight: 600;
+    margin: 12px 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+body.ad-mode-active .ad-lock-overlay .lock-countdown-pill {
+    background: linear-gradient(135deg, var(--primary-neon), var(--secondary-neon));
+    box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: 700;
+}

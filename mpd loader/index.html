@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum DASH Player | Advanced MPD Stream Loader</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Dash.js Library -->
+    <script src="https://cdn.dashjs.org/v4.7.4/dash.all.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-area">
+                <span class="logo-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10.5 6L16.5 12L10.5 18V6Z" fill="url(#logo-grad)" stroke="url(#logo-grad)" stroke-width="2" stroke-linejoin="round"/>
+                        <path d="M5.5 6L11.5 12L5.5 18V6Z" fill="url(#logo-grad)" opacity="0.5"/>
+                        <defs>
+                            <linearGradient id="logo-grad" x1="5.5" y1="6" x2="16.5" y2="18" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#3b82f6"/>
+                                <stop offset="1" stop-color="#8b5cf6"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </span>
+                <h1>Quantum<span>DASH</span></h1>
+            </div>
+            <div class="status-badge" id="player-status">
+                <span class="status-dot"></span>
+                <span class="status-text">Ready</span>
+            </div>
+        </header>
+
+        <!-- Main Layout -->
+        <main class="app-main">
+            <!-- Left Panel: Player & Quick Info -->
+            <section class="player-panel">
+                <div class="video-wrapper">
+                    <video id="videoPlayer" controls></video>
+                    <div class="loader-overlay" id="loaderOverlay">
+                        <div class="spinner"></div>
+                        <p>Loading MPD Stream...</p>
+                    </div>
+                </div>
+
+                <!-- Custom Info Banner -->
+                <div class="info-banner" id="streamInfoBanner">
+                    <div class="banner-content">
+                        <span class="info-icon">ℹ️</span>
+                        <div class="info-text-group">
+                            <h4 id="streamTitle">No Stream Loaded</h4>
+                            <p id="streamUrlText">Enter an MPD URL below to start playing</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metrics Dashboard -->
+                <div class="metrics-container">
+                    <div class="metrics-header">
+                        <h3>Real-time Diagnostics</h3>
+                        <span class="pulse-indicator">LIVE TELEMETRY</span>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <span class="metric-label">Resolution</span>
+                            <span class="metric-value" id="val-resolution">-</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-label">Video Bitrate</span>
+                            <span class="metric-value" id="val-video-bitrate">-</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-label">Audio Bitrate</span>
+                            <span class="metric-value" id="val-audio-bitrate">-</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-label">Buffer Length</span>
+                            <span class="metric-value" id="val-buffer">-</span>
+                            <div class="buffer-bar-bg">
+                                <div class="buffer-bar-fill" id="val-buffer-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-label">Latency / Delay</span>
+                            <span class="metric-value" id="val-latency">-</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-label">Dropped Frames</span>
+                            <span class="metric-value" id="val-dropped-frames">0</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Controls, Presets, Settings -->
+            <section class="control-panel">
+                <!-- Stream Input -->
+                <div class="panel-section">
+                    <h2>Load MPD Stream</h2>
+                    <div class="input-group">
+                        <input type="text" id="mpdUrlInput" placeholder="Enter MPD URL (e.g., https://.../manifest.mpd)" value="https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd">
+                        <button id="loadBtn" class="btn btn-primary">
+                            <span>Load Stream</span>
+                        </button>
+                    </div>
+                    
+                    <div class="advanced-toggle-container">
+                        <button id="toggleAdvancedBtn" class="btn btn-text">
+                            Advanced Config <span>▼</span>
+                        </button>
+                    </div>
+
+                    <!-- Advanced Config Panel -->
+                    <div class="advanced-panel" id="advancedPanel" style="display: none;">
+                        <div class="form-group">
+                            <label for="customHeaders">Custom Request Headers (JSON)</label>
+                            <textarea id="customHeaders" placeholder='{ "Authorization": "Bearer token..." }'></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group-checkbox">
+                                <input type="checkbox" id="chkAutoPlay" checked>
+                                <label for="chkAutoPlay">Auto Play on Load</label>
+                            </div>
+                            <div class="form-group-checkbox">
+                                <input type="checkbox" id="chkLowLatency">
+                                <label for="chkLowLatency">Low Latency Mode</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Presets -->
+                <div class="panel-section">
+                    <h2>Reference Streams</h2>
+                    <p class="section-desc">Select a preset MPD file to test the player instantly.</p>
+                    <div class="presets-grid">
+                        <div class="preset-card active" data-url="https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd" data-name="Big Buck Bunny" data-desc="Akamai Reference DASH (VOD)">
+                            <h4>Big Buck Bunny</h4>
+                            <p>1080p, 30fps VOD</p>
+                        </div>
+                        <div class="preset-card" data-url="https://dash.akamaized.net/dash264/TestCases/1a/sony/Sintel.mpd" data-name="Sintel" data-desc="Sony Reference DASH (VOD)">
+                            <h4>Sintel</h4>
+                            <p>Multi-audio & Subtitles</p>
+                        </div>
+                        <div class="preset-card" data-url="https://livesim.dashif.org/livesim/testpic_2s/Manifest.mpd" data-name="DASH-IF Live Sim" data-desc="DASH-IF Live Simulation (Live)">
+                            <h4>DASH-IF Live Sim</h4>
+                            <p>2s segments, Live loop</p>
+                        </div>
+                        <div class="preset-card" data-url="https://dash.akamaized.net/dash264/TestCases/2c/qualcomm/1/MultiResMuns.mpd" data-name="Qualcomm Multi-Res" data-desc="Qualcomm Multi-Resolution Test Stream">
+                            <h4>Qualcomm Multi-Res</h4>
+                            <p>Dynamic Bitrate switching</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stream Details & Selectors -->
+                <div class="panel-section" id="selectorsSection">
+                    <h2>Track Selection</h2>
+                    <div class="track-selectors">
+                        <div class="selector-group">
+                            <label for="videoTrackSelect">Video Quality</label>
+                            <select id="videoTrackSelect" disabled>
+                                <option value="-1">Auto (Adaptive)</option>
+                            </select>
+                        </div>
+                        <div class="selector-group">
+                            <label for="audioTrackSelect">Audio Language</label>
+                            <select id="audioTrackSelect" disabled>
+                                <option value="-1">Default</option>
+                            </select>
+                        </div>
+                        <div class="selector-group">
+                            <label for="textTrackSelect">Subtitles</label>
+                            <select id="textTrackSelect" disabled>
+                                <option value="-1">Off</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Troubleshooting & CORS Help -->
+                <div class="panel-section cors-helper">
+                    <h3>💡 CORS & Local Playback Tips</h3>
+                    <p>If streams fail to load, it is usually due to CORS policy on the hosting server.</p>
+                    <ul>
+                        <li><strong>Local Files:</strong> Browsers block loading file paths (e.g. <code>C:/...</code>) directly. Run a local web server (like <code>http-server</code> or VS Code Live Server) to host your files.</li>
+                        <li><strong>CORS Extensions:</strong> For quick testing of external MPDs, you can install a "CORS Unblock" extension in Chrome/Firefox.</li>
+                        <li><strong>CORS Headers:</strong> Ensure the server hosting your MPD responds with <code>Access-Control-Allow-Origin: *</code>.</li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Powered by Dash.js (v4.7.4) | Quantum DASH Console</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
