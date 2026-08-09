@@ -77,7 +77,7 @@ class ReelRequestHandler(BaseHTTPRequestHandler):
                         "id": f"mp4_{key}",
                         "reelId": key,
                         "filename": f"{item.get('post_id', '')}_{item.get('media_id', '')}.mp4",
-                        "title": f"ગુજરાતી શોર્ટ રીલ #{item.get('post_id', '')}",
+                        "title": f"Reel #{item.get('post_id', '')}",
                         "streamUrl": item.get("url", ""),
                         "hdLink": item.get("url", ""),
                         "sdLink": item.get("url", ""),
@@ -218,9 +218,9 @@ def run_server():
     server_address = ('', PORT)
     httpd = ThreadedHTTPServer(server_address, ReelRequestHandler)
     print(f"==================================================")
-    print(f"  CocoBlue Gujarati Reel Server is Live!")
+    print(f"  CocoBlue Reel Server is Live!")
     print(f"  URL: http://localhost:{PORT}")
-    print(f"  20 HD Videos JSON: {JSON_DATA_PATH}")
+    print(f"  Reels Database JSON: {JSON_DATA_PATH}")
     print(f"==================================================")
     try:
         httpd.serve_forever()

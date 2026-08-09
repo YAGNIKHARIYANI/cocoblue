@@ -3,6 +3,28 @@
  * કોકોબ્લુ ૨૦ HD/SD ફેસબુક વિડિયો ફીડ, ઓટો-સ્ક્ર્રોલ, સ્વાઇપ ગેસ્ચર અને ફાયરબેઝ ઓલ-ઇવેન્ટ્સ મોનિટરિંગ સ્યુટ.
  */
 
+const FAKE_USERNAMES = [
+    'john_doe', 'sam_smith', 'kate_wilson', 'michael_brown', 'emma_davis',
+    'david_jones', 'olivia_miller', 'james_wilson', 'sophia_taylor', 'william_thomas',
+    'isabella_moore', 'lucas_jackson', 'mia_martin', 'henry_lee', 'amelia_peck',
+    'alex_turner', 'chloe_harris', 'jack_white', 'grace_clark', 'daniel_lewis',
+    'lily_walker', 'ryan_hall', 'zoe_allen', 'matthew_young', 'harper_king',
+    'luke_wright', 'ava_scott', 'owen_green', 'charlotte_adams', 'jack_baker',
+    'ella_nelson', 'mason_carter', 'scarlett_mitchell', 'logan_perez', 'hazel_roberts',
+    'wyatt_turner', 'stella_phillips', 'carter_evans', 'penelope_campbell', 'nathan_parker'
+];
+
+function generateRandomViews() {
+    const isMillion = Math.random() > 0.4;
+    if (isMillion) {
+        const val = (Math.random() * (4.8 - 0.5) + 0.5).toFixed(1);
+        return `${val}M`;
+    } else {
+        const val = Math.floor(Math.random() * (980 - 10) + 10);
+        return `${val}K`;
+    }
+}
+
 class ReelApp {
     constructor() {
         this.rawVideoList = [];
@@ -74,6 +96,8 @@ class ReelApp {
         this.videoSourceTag = document.getElementById('videoSourceTag');
         this.videoTitleDisplay = document.getElementById('videoTitleDisplay');
         this.videoFilenameDisplay = document.getElementById('videoFilenameDisplay');
+        this.videoUsernameDisplay = document.getElementById('videoUsernameDisplay');
+        this.videoViewsDisplay = document.getElementById('videoViewsDisplay');
         this.videoCounterText = document.getElementById('videoCounterText');
         this.unmuteBanner = document.getElementById('unmuteBanner');
         this.qualityTag = document.querySelector('.resolution-tag');
@@ -170,13 +194,13 @@ class ReelApp {
             this.videoEl.addEventListener('error', (e) => {
                 console.error("[Video Element Error]", e);
                 
-                let errorMsg = "વિડિયો લોડ થઈ શક્યો નથી";
+                let errorMsg = "Video failed to load";
                 if (this.videoEl.error) {
                     switch (this.videoEl.error.code) {
-                        case 1: errorMsg = "વિડિયો લોડિંગ અટકાવી દેવામાં આવ્યું (Aborted)"; break;
-                        case 2: errorMsg = "નેટવર્ક કનેક્શન ગુમાવ્યું (Network Error)"; break;
-                        case 3: errorMsg = "વિડિયો ફોર્મેટ સપોર્ટેડ નથી (Decode Error)"; break;
-                        case 4: errorMsg = "સોર્સ વિડિયો લિંક બંધ થઈ ગઈ છે અથવા CORS/404 સમસ્યા છે (Source Not Supported)"; break;
+                        case 1: errorMsg = "Video loading aborted"; break;
+                        case 2: errorMsg = "Network connection lost"; break;
+                        case 3: errorMsg = "Video format not supported"; break;
+                        case 4: errorMsg = "Video source not supported (404 or CORS issue)"; break;
                     }
                 }
                 
@@ -380,8 +404,15 @@ class ReelApp {
                 if (response.ok) {
                     const data = await response.json();
                     if (Array.isArray(data) && data.length > 0) {
-                        mp4Data = data;
-                        console.log(`[CocoBlue Gujarati] ${mp4Data.length} MP4 videos loaded! (source: ${url})`);
+                        mp4Data = data.map(item => {
+                            return {
+                                ...item,
+                                title: item.title ? item.title.replace('ગુજરાતી શોર્ટ રીલ', 'Reel') : `Reel #${item.post_id || ''}`,
+                                username: item.username || `@${FAKE_USERNAMES[Math.floor(Math.random() * FAKE_USERNAMES.length)]}`,
+                                views: item.views && (item.views.endsWith('K') || item.views.endsWith('M')) ? item.views : generateRandomViews()
+                            };
+                        });
+                        console.log(`[CocoBlue] ${mp4Data.length} MP4 videos loaded! (source: ${url})`);
                         break;
                     } else {
                         const videosObj = data.videos || {};
@@ -393,16 +424,17 @@ class ReelApp {
                                     id: `mp4_${key}`,
                                     reelId: key,
                                     filename: `${item.post_id || ''}_${item.media_id || ''}.mp4`,
-                                    title: `ગુજરાતી શોર્ટ રીલ #${item.post_id || ''}`,
+                                    title: `Reel #${item.post_id || ''}`,
                                     streamUrl: item.url || '',
                                     hdLink: item.url || '',
                                     sdLink: item.url || '',
-                                    views: String(Math.floor(Math.random() * 2500000) + 500000),
+                                    views: generateRandomViews(),
+                                    username: `@${FAKE_USERNAMES[Math.floor(Math.random() * FAKE_USERNAMES.length)]}`,
                                     publishTime: "2026-07-04T00:47:17.000Z",
                                     isMPD: false
                                 };
                             });
-                            console.log(`[CocoBlue Gujarati] ${mp4Data.length} MP4 videos loaded from file! (source: ${url})`);
+                            console.log(`[CocoBlue] ${mp4Data.length} MP4 videos loaded from file! (source: ${url})`);
                             break;
                         }
                     }
@@ -414,7 +446,7 @@ class ReelApp {
         this.rawMp4List = mp4Data;
 
         if (this.rawMp4List.length === 0) {
-            console.error('[CocoBlue Gujarati] MP4 video data fetch failed!');
+            console.error('[CocoBlue] MP4 video data fetch failed!');
             if (window.logFirebaseEvent) {
                 window.logFirebaseEvent('api_fetch_error', {});
             }
@@ -502,26 +534,28 @@ class ReelApp {
 
         if (this.videoSourceTag) {
             this.videoSourceTag.className = 'live-tag';
-            this.videoSourceTag.innerHTML = '<i class="fa-solid fa-circle"></i> ગુજરાતી રીલ';
+            this.videoSourceTag.innerHTML = '<i class="fa-solid fa-circle"></i> Reel';
         }
         if (this.qualityTag) {
-            this.qualityTag.innerHTML = isHD || currentItem.isMPD ? 'એચડી ૧૦૮૦p (HD)' : 'એચડી ૩૬૦p (SD)';
+            this.qualityTag.innerHTML = isHD || currentItem.isMPD ? 'Full HD (1080p)' : 'Standard (360p)';
         }
 
-        if (this.videoTitleDisplay) this.videoTitleDisplay.textContent = currentItem.title || `ગુજરાતી રીલ #${this.currentIndex + 1}`;
+        if (this.videoTitleDisplay) this.videoTitleDisplay.textContent = currentItem.title || `Reel #${this.currentIndex + 1}`;
+        if (this.videoUsernameDisplay) this.videoUsernameDisplay.textContent = currentItem.username || '@anonymous';
+        if (this.videoViewsDisplay) this.videoViewsDisplay.textContent = currentItem.views || '10K';
         if (this.videoFilenameDisplay) this.videoFilenameDisplay.textContent = ''; // Removed Video ID / Reel ID display
         if (this.videoCounterText) {
             this.videoCounterText.textContent = `${this.currentIndex + 1} / ${this.shuffledQueue.length}`;
         }
         if (this.swipeHintText) {
-            this.swipeHintText.textContent = "બીજી રીલ જોવા માટે ઉપર સ્વાઇપ કરો";
+            this.swipeHintText.textContent = "Swipe up to watch next reel";
         }
 
         const loaderText = this.videoLoader ? this.videoLoader.querySelector('span') : null;
         if (currentItem.isMPD) {
-            if (loaderText) loaderText.textContent = "B.P. લોડ થઈ રહ્યું છે...";
+            if (loaderText) loaderText.textContent = "Loading...";
         } else {
-            if (loaderText) loaderText.textContent = "રીલ લોડ થઈ રહી છે...";
+            if (loaderText) loaderText.textContent = "Loading reel...";
         }
 
         this.showLoader(true);
@@ -561,7 +595,7 @@ class ReelApp {
                     this.dashPlayer.on(dashjs.MediaPlayer.events.ERROR, (e) => {
                         console.error("[DASH Player Error]", e);
                         
-                        let errorDetail = "નેટવર્ક સમયસીમા સમાપ્ત (Network Timeout or CORS Block)";
+                        let errorDetail = "Network Timeout or CORS Block";
                         if (e.error) {
                             if (typeof e.error === 'string') errorDetail = e.error;
                             else if (e.error.message) errorDetail = e.error.message;
@@ -677,25 +711,25 @@ class ReelApp {
         this.adLockTitle = document.getElementById('adLockTitle');
         this.adLockMessage = document.getElementById('adLockMessage');
         if (this.adLockTitle) {
-            this.adLockTitle.textContent = "કોકોબ્લુ સ્પોન્સર્ડ યુટ્યુબ એડ";
+            this.adLockTitle.textContent = "CocoBlue Sponsored YouTube Ad";
         }
         if (this.adLockMessage) {
             this.adLockMessage.style.display = 'block';
-            this.adLockMessage.textContent = "યુટ્યુબ વિડીયો પ્લે કરો સ્ક્ર્રોલ કરવા માટે";
+            this.adLockMessage.textContent = "Play YouTube video to unlock scrolling";
         }
 
         if (this.videoSourceTag) {
             this.videoSourceTag.className = 'live-tag yt-mode';
-            this.videoSourceTag.innerHTML = `<i class="fa-brands fa-youtube"></i> યુટ્યુબ એડ (${this.formatDuration(totalDurationSec)})`;
+            this.videoSourceTag.innerHTML = `<i class="fa-brands fa-youtube"></i> YouTube Ad (${this.formatDuration(totalDurationSec)})`;
         }
         if (this.videoTitleDisplay) {
-            this.videoTitleDisplay.textContent = title || "કોકોબ્લુ સ્પોન્સર્ડ યુટ્યુબ એડ";
+            this.videoTitleDisplay.textContent = title || "CocoBlue Sponsored YouTube Ad";
         }
         if (this.videoFilenameDisplay) {
-            this.videoFilenameDisplay.textContent = `યુટ્યુબ આઈડી: ${ytVideoId1} & ${ytVideoId2}`;
+            this.videoFilenameDisplay.textContent = `YouTube ID: ${ytVideoId1} & ${ytVideoId2}`;
         }
         if (this.swipeHintText) {
-            this.swipeHintText.textContent = `🔒 એડ ચાલુ છે (${this.formatDuration(totalDurationSec)})`;
+            this.swipeHintText.textContent = `🔒 Ad is playing (${this.formatDuration(totalDurationSec)})`;
         }
 
         this.showLoader(false);
@@ -720,7 +754,7 @@ class ReelApp {
         this.adCompleted = true;
 
         if (this.swipeHintText) {
-            this.swipeHintText.textContent = "આગામી રીલ્સ માટે ઉપર સ્વાઇપ કરો";
+            this.swipeHintText.textContent = "Swipe up to watch next reel";
         }
 
         if (this.adLockMessage) {
@@ -994,7 +1028,7 @@ class ReelApp {
     handleVideoEnded() {
         if (this.isAdMode) return;
         
-        console.log("[CocoBlue Gujarati] 🎬 વિડિયો પૂર્ણ થયો -> ઓટો-સ્ક્ર્રોલ");
+        console.log("[CocoBlue] 🎬 Video ended -> Auto-scrolling");
 
         // 🔥 FIREBASE LOG: REEL AUTO SCROLLED ON END
         if (window.logFirebaseEvent) {

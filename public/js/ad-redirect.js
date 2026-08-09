@@ -6,9 +6,9 @@
 class AdRedirectManager {
     constructor() {
         this.youtubeAds = [
-            { id: "kChKciLOaRM", title: "કોકોબ્લુ સ્પોન્સર્ડ રીલ #૧ (૧:૨૦)", url: "https://youtu.be/kChKciLOaRM?si=mxKwbABXSUXjmMag", duration: 80 },
-            { id: "hjdnmgDeR7Q", title: "કોકોબ્લુ સ્પોન્સર્ડ રીલ #૨ (૧:૦૦)", url: "https://youtu.be/hjdnmgDeR7Q?si=GR7N6xCAYt4--0MD", duration: 60 },
-            { id: "tII7mfnLUms", title: "કોકોબ્લુ સ્પોન્સર્ડ રીલ #૩ (૦:૪૫)", url: "https://youtu.be/tII7mfnLUms?si=7o9oyQ2KTrbN_6ms", duration: 45 }
+            { id: "kChKciLOaRM", title: "CocoBlue Sponsored Reel #1 (1:20)", url: "https://youtu.be/kChKciLOaRM?si=mxKwbABXSUXjmMag", duration: 80 },
+            { id: "hjdnmgDeR7Q", title: "CocoBlue Sponsored Reel #2 (1:00)", url: "https://youtu.be/hjdnmgDeR7Q?si=GR7N6xCAYt4--0MD", duration: 60 },
+            { id: "tII7mfnLUms", title: "CocoBlue Sponsored Reel #3 (0:45)", url: "https://youtu.be/tII7mfnLUms?si=7o9oyQ2KTrbN_6ms", duration: 45 }
         ];
 
         this.adDurationSeconds = 60;
@@ -111,7 +111,7 @@ class AdRedirectManager {
                     const elapsedWhileAway = Math.floor((Date.now() - session.timestamp) / 1000);
                     const actualRemaining = Math.max(1, session.remainingSeconds - Math.max(0, elapsedWhileAway));
 
-                    console.log(`[CocoBlue Anti-Bypass] 🔒 જૂનું સેશન મળ્યું! બાકી સમય: ${actualRemaining}s`);
+                    console.log(`[CocoBlue Anti-Bypass] 🔒 Old session found! Remaining time: ${actualRemaining}s`);
                     
                     this.isAdActive = true;
                     this.adDurationSeconds = session.totalDuration || 80;
@@ -121,7 +121,7 @@ class AdRedirectManager {
 
                     const applyRecovery = () => {
                         if (window.reelApp) {
-                            window.reelApp.enterYouTubeAdMode(this.currentAdId, this.currentAdId2, session.adTitle || "કોકોબ્લુ સ્પોન્સર્ડ એડ", this.adDurationSeconds);
+                            window.reelApp.enterYouTubeAdMode(this.currentAdId, this.currentAdId2, session.adTitle || "CocoBlue Sponsored Ad", this.adDurationSeconds);
                             this.updateHUD(this.currentCountdown, true);
                             this.startAdLockCountdown();
                             this.showScrollLockWarning();
@@ -134,7 +134,7 @@ class AdRedirectManager {
                     return;
                 }
             } catch (err) {
-                console.error("[CocoBlue Anti-Bypass] સેશન રીડ કરવામાં ભૂલ:", err);
+                console.error("[CocoBlue Anti-Bypass] Error reading session:", err);
                 localStorage.removeItem(this.storageKey);
             }
         }
@@ -150,7 +150,7 @@ class AdRedirectManager {
             totalDuration: this.adDurationSeconds,
             adId: this.currentAdId || this.youtubeAds[0].id,
             adId2: this.currentAdId2 || this.youtubeAds[1].id,
-            adTitle: this.currentAdTitle || "કોકોબ્લુ સ્પોન્સર્ડ એડ",
+            adTitle: this.currentAdTitle || "CocoBlue Sponsored Ad",
             timestamp: Date.now()
         };
         localStorage.setItem(this.storageKey, JSON.stringify(sessionData));
@@ -170,7 +170,7 @@ class AdRedirectManager {
             const remainingUntilNext = 80 - this.timeSinceLastAd;
 
             if (this.timerSubtextDisplay) {
-                this.timerSubtextDisplay.textContent = `નવી એડ: ${this.formatTimeDigital(Math.max(0, remainingUntilNext))}`;
+                this.timerSubtextDisplay.textContent = `Next Ad: ${this.formatTimeDigital(Math.max(0, remainingUntilNext))}`;
             }
 
             if (this.timeSinceLastAd >= 80) {
@@ -198,7 +198,7 @@ class AdRedirectManager {
     triggerInAppYouTubeAd(customYtId = null) {
         let adObj1, adObj2;
         if (customYtId) {
-            adObj1 = this.youtubeAds.find(a => a.id === customYtId) || { id: customYtId, title: "કોકોબ્લુ સ્પોન્સર્ડ રીલ", duration: 60 };
+            adObj1 = this.youtubeAds.find(a => a.id === customYtId) || { id: customYtId, title: "CocoBlue Sponsored Reel", duration: 60 };
             adObj2 = this.youtubeAds.find(a => a.id !== adObj1.id) || this.youtubeAds[0];
         } else {
             const shuffled = [...this.youtubeAds].sort(() => 0.5 - Math.random());
@@ -367,9 +367,9 @@ class AdRedirectManager {
         const m = Math.floor(sec / 60);
         const s = sec % 60;
         if (m > 0) {
-            return `${m} મિનિટ ${s < 10 ? '0' : ''}${s} સેકન્ડ`;
+            return `${m} min ${s < 10 ? '0' : ''}${s} sec`;
         }
-        return `${s} સેકન્ડ`;
+        return `${s} sec`;
     }
 
     updateHUD(seconds, isLocked) {
@@ -384,9 +384,9 @@ class AdRedirectManager {
 
         if (this.timerTitleDisplay) {
             if (isLocked) {
-                this.timerTitleDisplay.innerHTML = `<i class="fa-solid fa-lock" style="color:#ff0844"></i> ${this.formatTimeDigital(this.adDurationSeconds)} લોક`;
+                this.timerTitleDisplay.innerHTML = `<i class="fa-solid fa-lock" style="color:#ff0844"></i> ${this.formatTimeDigital(this.adDurationSeconds)} Locked`;
             } else {
-                this.timerTitleDisplay.innerHTML = `<i class="fa-solid fa-lock-open" style="color:#00f2fe"></i> સ્ક્ર્રોલ અનલોક`;
+                this.timerTitleDisplay.innerHTML = `<i class="fa-solid fa-lock-open" style="color:#00f2fe"></i> Scroll Unlocked`;
             }
         }
     }
