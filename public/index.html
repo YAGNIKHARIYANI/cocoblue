@@ -46,9 +46,6 @@
             <button class="control-pill-btn" id="shuffleVideosBtn">
                 <i class="fa-solid fa-shuffle"></i> Shuffle Reels
             </button>
-            <button class="control-pill-btn trigger-ad-pill" id="manualAdTriggerBtn">
-                <i class="fa-brands fa-youtube"></i> 1:20 Min In-App Ad
-            </button>
             <button class="control-pill-btn trigger-redirect-pill" id="externalRedirectBtn">
                 <i class="fa-solid fa-arrow-up-right-from-square"></i> Visit Sponsor Link
             </button>
@@ -57,23 +54,7 @@
         <!-- MIDDLE VIDEO PLAYER WRAPPER -->
         <section class="reel-viewport" id="reelViewport">
 
-            <!-- 1M 20S AD TIMER & LOCK HUD WIDGET -->
-            <div class="ad-timer-widget" id="adTimerWidget">
-                <div class="timer-ring-container">
-                    <svg class="timer-svg" viewBox="0 0 36 36">
-                        <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                        <path class="circle-progress" id="timerProgressCircle" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                    </svg>
-                    <span class="timer-seconds" id="timerCount">1:20</span>
-                </div>
-                <div class="timer-details">
-                    <span class="timer-title" id="timerTitleDisplay"><i class="fa-solid fa-lock"></i> 1:20 Locked</span>
-                    <span class="timer-subtext" id="timerSubtextDisplay">Next Ad: 1:20</span>
-                </div>
-                <button class="timer-pause-btn" id="timerPauseBtn" title="Pause / Play Timer">
-                    <i class="fa-solid fa-pause"></i>
-                </button>
-            </div>
+            <!-- Ad Timer Widget removed -->
 
 
             <!-- REEL CARD -->
@@ -211,15 +192,6 @@
 
         <!-- SIDE CONTROLS & SETTINGS (DESKTOP RIGHT) -->
         <aside class="desktop-side-panel right-panel">
-            <div class="panel-card">
-                <h3><i class="fa-brands fa-youtube"></i> CocoBlue YouTube Ads</h3>
-                <p class="panel-desc">YouTube ads will play. Scroll remains locked until ad finishes:</p>
-                <ul class="yt-link-list">
-                    <li><a href="https://youtu.be/kChKciLOaRM?si=mxKwbABXSUXjmMag" target="_blank"><i class="fa-brands fa-youtube"></i> Open YouTube Reel #1 (1:20)</a></li>
-                    <li><a href="https://youtu.be/hjdnmgDeR7Q?si=GR7N6xCAYt4--0MD" target="_blank"><i class="fa-brands fa-youtube"></i> Open YouTube Reel #2 (1:00)</a></li>
-                    <li><a href="https://youtu.be/tII7mfnLUms?si=7o9oyQ2KTrbN_6ms" target="_blank"><i class="fa-brands fa-youtube"></i> Open YouTube Reel #3 (0:45)</a></li>
-                </ul>
-            </div>
 
             <div class="panel-card">
                 <h3><i class="fa-solid fa-sliders"></i> Settings</h3>

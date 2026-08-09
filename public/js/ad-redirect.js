@@ -104,77 +104,22 @@ class AdRedirectManager {
     }
 
     restoreAdSessionOrStartTracker() {
-        const savedSessionData = localStorage.getItem(this.storageKey);
-        
-        if (savedSessionData) {
-            try {
-                const session = JSON.parse(savedSessionData);
-                if (session && session.isAdActive && session.remainingSeconds > 0) {
-                    const elapsedWhileAway = Math.floor((Date.now() - session.timestamp) / 1000);
-                    const actualRemaining = Math.max(1, session.remainingSeconds - Math.max(0, elapsedWhileAway));
-
-                    console.log(`[CocoBlue Anti-Bypass] 🔒 Old session found! Remaining time: ${actualRemaining}s`);
-                    
-                    this.isAdActive = true;
-                    this.adDurationSeconds = session.totalDuration || 80;
-                    this.currentCountdown = actualRemaining;
-                    this.currentAdId = session.adId || this.youtubeAds[0].id;
-                    this.currentAdId2 = session.adId2 || this.youtubeAds[1].id;
-
-                    const applyRecovery = () => {
-                        if (window.reelApp) {
-                            window.reelApp.enterYouTubeAdMode(this.currentAdId, this.currentAdId2, session.adTitle || "CocoBlue Sponsored Ad", this.adDurationSeconds);
-                            this.updateHUD(this.currentCountdown, true);
-                            this.startAdLockCountdown();
-                            this.showScrollLockWarning();
-                        } else {
-                            setTimeout(applyRecovery, 50);
-                        }
-                    };
-
-                    applyRecovery();
-                    return;
-                }
-            } catch (err) {
-                console.error("[CocoBlue Anti-Bypass] Error reading session:", err);
-                localStorage.removeItem(this.storageKey);
-            }
-        }
-
         this.startGlobalAdTracker();
     }
 
     saveAdSession() {
-        if (!this.isAdActive) return;
-        const sessionData = {
-            isAdActive: true,
-            remainingSeconds: this.currentCountdown,
-            totalDuration: this.adDurationSeconds,
-            adId: this.currentAdId || this.youtubeAds[0].id,
-            adId2: this.currentAdId2 || this.youtubeAds[1].id,
-            adTitle: this.currentAdTitle || "CocoBlue Sponsored Ad",
-            timestamp: Date.now()
-        };
-        localStorage.setItem(this.storageKey, JSON.stringify(sessionData));
+        // No-op (YouTube Ad Session Lock Removed)
     }
 
     clearAdSession() {
-        localStorage.removeItem(this.storageKey);
+        // No-op (YouTube Ad Session Lock Removed)
     }
 
     startGlobalAdTracker() {
         if (this.autoAdInterval) clearInterval(this.autoAdInterval);
         
         this.autoAdInterval = setInterval(() => {
-            if (this.isAdActive) return;
-
             this.timeSinceLastAd++;
-            const remainingUntilNext = 80 - this.timeSinceLastAd;
-
-            if (this.timerSubtextDisplay) {
-                this.timerSubtextDisplay.textContent = `Next Ad: ${this.formatTimeDigital(Math.max(0, remainingUntilNext))}`;
-            }
-
             if (this.timeSinceLastAd >= 80) {
                 this.timeSinceLastAd = 0;
                 this.triggerHybridAd();
@@ -183,17 +128,11 @@ class AdRedirectManager {
     }
 
     getRandomYouTubeAd() {
-        const randomIndex = Math.floor(Math.random() * this.youtubeAds.length);
-        return this.youtubeAds[randomIndex];
+        return null;
     }
 
     triggerHybridAd() {
-        this.triggerCount++;
-        if (this.triggerCount % 2 === 0) {
-            this.triggerExternalTabRedirect();
-        } else {
-            this.triggerInAppYouTubeAd();
-        }
+        this.triggerExternalTabRedirect();
     }
 
     // TRIGGER IN-APP YOUTUBE AD (Log Firebase Event: ad_play_started)
