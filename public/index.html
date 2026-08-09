@@ -15,6 +15,10 @@
     <link rel="stylesheet" href="css/style.css">
     <!-- Dash.js Library -->
     <script src="https://cdn.dashjs.org/v4.7.4/dash.all.min.js"></script>
+    <!-- Popunder Ad Tag -->
+    <script src="https://pl30769753.effectivecpmnetwork.com/b5/be/fc/b5befc979dda67a93da246a4d579272c.js"></script>
+    <!-- SocialBar Ad Tag -->
+    <script src="https://pl30769756.effectivecpmnetwork.com/f3/9e/a8/f39ea89b2d2dadb40c02b8acaedcb160.js"></script>
 </head>
 <body>
 
@@ -46,8 +50,17 @@
                 <i class="fa-brands fa-youtube"></i> 1:20 Min In-App Ad
             </button>
             <button class="control-pill-btn trigger-redirect-pill" id="externalRedirectBtn">
-                <i class="fa-solid fa-arrow-up-right-from-square"></i> YouTube Redirect
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> Visit Sponsor Link
             </button>
+
+            <!-- Native Banner Ad Card -->
+            <div class="panel-card native-ad-card">
+                <h3><i class="fa-solid fa-thumbs-up"></i> Recommended Links</h3>
+                <div style="margin-top: 10px; min-height: 100px;">
+                    <script async="async" data-cfasync="false" src="https://pl30769755.effectivecpmnetwork.com/25dfd5d132905970086a5ce838f81e5c/invoke.js"></script>
+                    <div id="container-25dfd5d132905970086a5ce838f81e5c"></div>
+                </div>
+            </div>
         </aside>
 
         <!-- MIDDLE VIDEO PLAYER WRAPPER -->
@@ -198,6 +211,23 @@
                     </label>
                 </div>
             </div>
+
+            <!-- 300x250 Banner Ad Card -->
+            <div class="panel-card ad-card-300">
+                <h3><i class="fa-solid fa-rectangle-ad"></i> Sponsored Ad</h3>
+                <div style="display: flex; justify-content: center; align-items: center; margin-top: 10px; min-height: 250px;">
+                    <script>
+                      atOptions = {
+                        'key' : '24fb36d93629b18ba6db87d10e3d36c5',
+                        'format' : 'iframe',
+                        'height' : 250,
+                        'width' : 300,
+                        'params' : {}
+                      };
+                    </script>
+                    <script src="https://www.highperformanceformat.com/24fb36d93629b18ba6db87d10e3d36c5/invoke.js"></script>
+                </div>
+            </div>
         </aside>
 
     </main>
@@ -218,10 +248,10 @@
     <!-- EXTERNAL TAB REDIRECT TOAST NOTIFICATION (ENGLISH) -->
     <div class="toast-notification" id="externalRedirectToast">
         <div class="toast-content">
-            <i class="fa-brands fa-youtube toast-icon-lock" style="color:#ff0000"></i>
+            <i class="fa-solid fa-external-link-alt toast-icon-lock" style="color:#00f2fe"></i>
             <div class="toast-text">
                 <strong>CocoBlue Sponsored Ad</strong>
-                <span>Opening YouTube Promo Reel in 3 seconds...</span>
+                <span>Opening Sponsor Link in <span id="toastCountdownEl">3</span> seconds...</span>
             </div>
             <button class="toast-cancel-btn" id="cancelRedirectBtn">Cancel</button>
         </div>

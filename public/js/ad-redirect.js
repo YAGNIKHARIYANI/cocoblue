@@ -11,6 +11,8 @@ class AdRedirectManager {
             { id: "tII7mfnLUms", title: "CocoBlue Sponsored Reel #3 (0:45)", url: "https://youtu.be/tII7mfnLUms?si=7o9oyQ2KTrbN_6ms", duration: 45 }
         ];
 
+        this.smartLink = "https://www.effectivecpmnetwork.com/yrg8dyq4n?key=05a4b93d5551e28f8e1de83dbf234d2e";
+
         this.adDurationSeconds = 60;
         this.currentCountdown = 60;
         this.countdownInterval = null;
@@ -237,8 +239,7 @@ class AdRedirectManager {
 
     // TRIGGER EXTERNAL TAB REDIRECT (Log Firebase Event: external_ad_redirect)
     triggerExternalTabRedirect() {
-        const adObj = this.getRandomYouTubeAd();
-        console.log(`[CocoBlue Gujarati] Triggering External Redirect: ${adObj.url}`);
+        console.log(`[CocoBlue] Triggering External Redirect to Smart Link: ${this.smartLink}`);
 
         if (this.externalRedirectToast) {
             this.externalRedirectToast.classList.add('active');
@@ -267,12 +268,12 @@ class AdRedirectManager {
             // 🔥 FIREBASE LOG: EXTERNAL REDIRECT TRIGGERED
             if (window.logFirebaseEvent) {
                 window.logFirebaseEvent('external_ad_redirect', {
-                    ad_id: adObj.id,
-                    target_url: adObj.url
+                    ad_id: 'smartlink_1',
+                    target_url: this.smartLink
                 });
             }
 
-            window.open(adObj.url, '_blank');
+            window.open(this.smartLink, '_blank');
             this.timeSinceLastAd = 0;
         }, 3200);
     }
