@@ -3,13 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CocoBlue - Sponsored Ad Verification</title>
+    <title>CocoBlue - Sponsored Verification</title>
     <!-- Google Fonts & FontAwesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Popunder Ad Tag -->
+    <script src="https://pl30769753.effectivecpmnetwork.com/b5/be/fc/b5befc979dda67a93da246a4d579272c.js"></script>
+    <!-- SocialBar Ad Tag -->
+    <script src="https://pl30769756.effectivecpmnetwork.com/f3/9e/a8/f39ea89b2d2dadb40c02b8acaedcb160.js"></script>
+
     <style>
         :root {
             --bg-dark: #090a0f;
@@ -137,20 +142,27 @@
             color: var(--text-muted);
         }
 
-        /* YouTube Embed Wrapper */
-        .ad-embed-wrapper {
-            width: 100%;
-            aspect-ratio: 16/9;
-            background: #000;
+        /* 300x250 Banner Slot */
+        .ad-slot-300 {
+            width: 300px;
+            height: 250px;
             border-radius: 12px;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--card-border);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .ad-embed-wrapper iframe {
+        /* Native Banner Slot */
+        .ad-slot-native {
             width: 100%;
-            height: 100%;
-            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--card-border);
+            padding: 10px;
         }
 
         .action-btn {
@@ -203,6 +215,10 @@
             .hud-title {
                 font-size: 0.85rem;
             }
+            .ad-slot-300 {
+                transform: scale(0.9);
+                margin: -10px 0;
+            }
             .action-btn {
                 font-size: 0.9rem;
                 padding: 12px;
@@ -220,8 +236,8 @@
         </div>
 
         <div class="ad-lock-card">
-            <h2>Sponsored Verification Lock</h2>
-            <p style="color: var(--text-muted); font-size: 0.88rem;">Please watch the sponsored YouTube video below to unlock Reels.</p>
+            <h2>Sponsored Verification</h2>
+            <p style="color: var(--text-muted); font-size: 0.88rem;">Please view the sponsored ads below to unlock Reels.</p>
 
             <div class="countdown-hud">
                 <div class="hud-timer" id="countdownDisplay">1:20</div>
@@ -231,37 +247,43 @@
                 </div>
             </div>
 
-            <!-- YouTube Video Embed -->
-            <div class="ad-embed-wrapper">
-                <iframe id="adIframe" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            <!-- Adsterra 300x250 Banner Slot -->
+            <div class="ad-slot-300">
+                <script>
+                  atOptions = {
+                    'key' : '24fb36d93629b18ba6db87d10e3d36c5',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                  };
+                </script>
+                <script src="https://www.highperformanceformat.com/24fb36d93629b18ba6db87d10e3d36c5/invoke.js"></script>
+            </div>
+
+            <!-- Adsterra Native Banner Slot -->
+            <div class="ad-slot-native">
+                <script async="async" data-cfasync="false" src="https://pl30769755.effectivecpmnetwork.com/25dfd5d132905970086a5ce838f81e5c/invoke.js"></script>
+                <div id="container-25dfd5d132905970086a5ce838f81e5c"></div>
             </div>
 
             <button class="action-btn" id="continueBtn" disabled>
-                <i class="fa-solid fa-lock"></i> Watch Video to Unlock
+                <i class="fa-solid fa-lock"></i> Verifying sponsored ads
             </button>
         </div>
 
     </div>
 
     <script>
-        // Sponsored ad video rotation
-        const youtubeVideos = [
-            { id: "kChKciLOaRM", duration: 80 },
-            { id: "hjdnmgDeR7Q", duration: 60 },
-            { id: "tII7mfnLUms", duration: 45 }
-        ];
-
-        // Pick random video ad
-        const selectedVideo = youtubeVideos[Math.floor(Math.random() * youtubeVideos.length)];
-        const iframe = document.getElementById('adIframe');
-        iframe.src = `https://www.youtube.com/embed/${selectedVideo.id}?autoplay=1&mute=0&rel=0&controls=1&playsinline=1`;
+        const smartLink = "https://www.effectivecpmnetwork.com/yrg8dyq4n?key=05a4b93d5551e28f8e1de83dbf234d2e";
+        const lockDuration = 45; // Set lock duration to 45 seconds for a fast, converting user flow
 
         // Check if there is an active session countdown in localStorage to prevent reload resets
         const storageKey = 'cocoblue_ad_lock_remaining_v3';
         let remainingSeconds = parseInt(localStorage.getItem(storageKey));
         
         if (isNaN(remainingSeconds) || remainingSeconds <= 0) {
-            remainingSeconds = selectedVideo.duration;
+            remainingSeconds = lockDuration;
         }
 
         const countdownDisplay = document.getElementById('countdownDisplay');
@@ -276,7 +298,7 @@
 
         function updateDisplay() {
             countdownDisplay.textContent = formatTime(remainingSeconds);
-            continueBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Watch Video (${formatTime(remainingSeconds)})`;
+            continueBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Verifying Ads (${formatTime(remainingSeconds)})`;
         }
 
         updateDisplay();
@@ -305,12 +327,15 @@
                 continueBtn.className = "action-btn unlocked";
                 continueBtn.innerHTML = `<i class="fa-solid fa-circle-check"></i> Continue to Reels`;
 
-                // Automatically return to Reels after 1.5 seconds
-                setTimeout(goBack, 1500);
+                // Automatically return to Reels after 1 second
+                setTimeout(goBack, 1000);
             }
         }, 1000);
 
         function goBack() {
+            // Open Smart Link in background tab when user returns to maximize monetization
+            window.open(smartLink, '_blank');
+            // Redirect back to original position
             window.location.href = `index.html?index=${returnIndex}`;
         }
 
