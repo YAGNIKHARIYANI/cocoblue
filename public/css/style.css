@@ -1242,7 +1242,18 @@ body.ad-mode-active .ad-lock-overlay .lock-countdown-pill {
     align-items: center;
     padding: 20px;
     text-align: center;
-    transition: all 0.3s ease-in-out;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+
+    /* Initially hidden but not display: none so ad scripts can initialize properly */
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.ad-break-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
 }
 
 .ad-break-card {
@@ -1252,6 +1263,8 @@ body.ad-mode-active .ad-lock-overlay .lock-countdown-pill {
     padding: 24px;
     width: 100%;
     max-width: 360px;
+    max-height: 95vh; /* Keep within screen size */
+    overflow-y: auto; /* Enable scroll if content overflows */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1369,4 +1382,28 @@ body.ad-mode-active .ad-lock-overlay .lock-countdown-pill {
     0% { box-shadow: 0 0 0 0 rgba(56, 239, 125, 0.4); }
     70% { box-shadow: 0 0 0 10px rgba(56, 239, 125, 0); }
     100% { box-shadow: 0 0 0 0 rgba(56, 239, 125, 0); }
+}
+
+/* Mobile-specific optimizations for Ad Break Overlay */
+@media (max-width: 480px) {
+    .ad-break-card {
+        padding: 16px;
+        gap: 10px;
+        max-width: 320px;
+    }
+    .ad-break-title {
+        font-size: 1.15rem;
+    }
+    .ad-break-desc {
+        font-size: 0.75rem;
+        margin-bottom: 5px;
+    }
+    .ad-break-slot-300 {
+        transform: scale(0.9); /* Scale down ad to fit narrow screens */
+        margin: -10px 0;
+    }
+    .ad-break-btn {
+        padding: 10px;
+        font-size: 0.85rem;
+    }
 }

@@ -259,7 +259,7 @@ class ReelApp {
                 e.stopPropagation();
                 const overlay = document.getElementById('adBreakOverlay');
                 if (overlay) {
-                    overlay.style.display = 'none';
+                    overlay.classList.remove('active');
                 }
                 this.videosWatched = 0;
                 this.isScrollLocked = false;
@@ -829,7 +829,7 @@ class ReelApp {
 
         const overlay = document.getElementById('adBreakOverlay');
         if (overlay) {
-            overlay.style.display = 'flex';
+            overlay.classList.add('active');
         }
 
         // 🔥 FIREBASE LOG: AD BREAK STARTED
