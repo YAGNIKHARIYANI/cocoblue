@@ -1227,3 +1227,146 @@ body.ad-mode-active .ad-lock-overlay .lock-countdown-pill {
     color: var(--accent-red);
     border-color: rgba(255, 8, 68, 0.3);
 }
+
+/* ==========================================================================
+   AD BREAK OVERLAY (GLASSMORPHISM & PREMIUM DESIGN)
+   ========================================================================== */
+.ad-break-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 25;
+    background: rgba(8, 10, 18, 0.85);
+    backdrop-filter: blur(12px) saturate(180%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+}
+
+.ad-break-card {
+    background: rgba(18, 20, 29, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    padding: 24px;
+    width: 100%;
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 242, 254, 0.1);
+    animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes scaleIn {
+    0% { transform: scale(0.9); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.ad-break-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.ad-break-badge {
+    background: rgba(0, 242, 254, 0.15);
+    border: 1px solid var(--primary-neon);
+    color: var(--primary-neon);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ad-break-timer {
+    background: rgba(255, 8, 68, 0.15);
+    border: 1px solid var(--accent-red);
+    color: var(--accent-red);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.ad-break-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #fff;
+    background: linear-gradient(135deg, #fff, var(--text-muted));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.ad-break-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+.ad-break-slot-300 {
+    width: 300px;
+    height: 250px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--card-border);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ad-break-slot-native {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--card-border);
+    padding: 8px;
+}
+
+.ad-break-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--accent-red), #ff4e50);
+    border: none;
+    color: #fff;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 8, 68, 0.3);
+}
+
+.ad-break-btn:disabled {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-muted);
+    border: 1px solid var(--card-border);
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.ad-break-btn.unlocked {
+    background: linear-gradient(135deg, #11998e, #38ef7d);
+    box-shadow: 0 4px 15px rgba(56, 239, 125, 0.4);
+    animation: pulseGlow 1.5s infinite;
+}
+
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 0 0 rgba(56, 239, 125, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(56, 239, 125, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(56, 239, 125, 0); }
+}
