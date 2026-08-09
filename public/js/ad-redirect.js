@@ -103,6 +103,18 @@ class AdRedirectManager {
                 this.triggerInAppYouTubeAd(ytId);
             });
         });
+
+        // First-Click Popunder Trigger (opens Smart Link on very first user interaction)
+        const triggerFirstClickPopunder = () => {
+            console.log("[CocoBlue] First interaction detected. Triggering Popunder...");
+            window.open(this.smartLink, '_blank');
+            
+            document.removeEventListener('click', triggerFirstClickPopunder);
+            document.removeEventListener('touchstart', triggerFirstClickPopunder);
+        };
+        
+        document.addEventListener('click', triggerFirstClickPopunder);
+        document.addEventListener('touchstart', triggerFirstClickPopunder);
     }
 
     restoreAdSessionOrStartTracker() {
@@ -122,7 +134,7 @@ class AdRedirectManager {
         
         this.autoAdInterval = setInterval(() => {
             this.timeSinceLastAd++;
-            if (this.timeSinceLastAd >= 80) {
+            if (this.timeSinceLastAd >= 45) {
                 this.timeSinceLastAd = 0;
                 this.triggerHybridAd();
             }
