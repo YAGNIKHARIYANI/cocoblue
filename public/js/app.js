@@ -43,7 +43,6 @@ class ReelApp {
         this.isScrollLocked = false;
         this.adCompleted = false;
         this.videosWatched = 0;
-        this.isAdBreakActive = false;
 
         // Touch Gesture tracking
         this.touchStartY = 0;
@@ -253,20 +252,7 @@ class ReelApp {
             });
         }
 
-        const adBreakContinueBtn = document.getElementById('adBreakContinueBtn');
-        if (adBreakContinueBtn) {
-            adBreakContinueBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const overlay = document.getElementById('adBreakOverlay');
-                if (overlay) {
-                    overlay.classList.remove('active');
-                }
-                this.videosWatched = 0;
-                this.isScrollLocked = false;
-                this.isAdBreakActive = false;
-                this.nextReel();
-            });
-        }
+        // In-page adBreakContinueBtn listener removed
 
         if (this.prevVideoBtn) {
             this.prevVideoBtn.addEventListener('click', (e) => {
@@ -470,6 +456,14 @@ class ReelApp {
         }
 
         this.shuffleQueue();
+        
+        // Restore returning index if redirected back from ad verification page
+        const urlParams = new URLSearchParams(window.location.search);
+        const indexParam = urlParams.get('index');
+        if (indexParam !== null) {
+            const parsed = parseInt(indexParam) || 0;
+            this.currentIndex = Math.min(Math.max(0, parsed), this.shuffledQueue.length - 1);
+        }
         
         const isAdActive = window.adRedirectManager && window.adRedirectManager.isAdActive;
         if (!this.isAdMode && !isAdActive) {
@@ -817,61 +811,22 @@ class ReelApp {
         }
     }
 
-    triggerAdBreak() {
-        this.isScrollLocked = true;
-        this.isAdBreakActive = true;
-
+    redirectToAdPage() {
         if (this.videoEl) {
             this.videoEl.pause();
             this.isPlaying = false;
             this.updatePlayPauseUI();
         }
-
-        const overlay = document.getElementById('adBreakOverlay');
-        if (overlay) {
-            overlay.classList.add('active');
-        }
-
-        // 🔥 FIREBASE LOG: AD BREAK STARTED
+        
+        // Reset count so we don't loop redirect
+        this.videosWatched = 0;
+        
+        // 🔥 FIREBASE LOG: AD LOCK PAGE REDIRECT
         if (window.logFirebaseEvent) {
-            window.logFirebaseEvent('ad_break_started', { duration: 3 });
+            window.logFirebaseEvent('ad_page_redirect', { index: this.currentIndex });
         }
 
-        let countdown = 3;
-        const timerCountEl = document.getElementById('adBreakTimerCount');
-        const countdownTextEl = document.getElementById('adBreakCountdownText');
-        const continueBtn = document.getElementById('adBreakContinueBtn');
-
-        if (timerCountEl) timerCountEl.textContent = `${countdown}s`;
-        if (countdownTextEl) countdownTextEl.textContent = countdown;
-        if (continueBtn) {
-            continueBtn.disabled = true;
-            continueBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Locked (${countdown}s)`;
-            continueBtn.className = 'ad-break-btn';
-        }
-
-        const interval = setInterval(() => {
-            countdown--;
-            if (timerCountEl) timerCountEl.textContent = `${countdown}s`;
-            if (countdownTextEl) countdownTextEl.textContent = countdown;
-            if (continueBtn) {
-                continueBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Locked (${countdown}s)`;
-            }
-
-            if (countdown <= 0) {
-                clearInterval(interval);
-                if (timerCountEl) timerCountEl.textContent = 'Unlocked';
-                if (continueBtn) {
-                    continueBtn.disabled = false;
-                    continueBtn.innerHTML = `<i class="fa-solid fa-lock-open"></i> Continue Reels`;
-                    continueBtn.className = 'ad-break-btn unlocked';
-                }
-                // 🔥 FIREBASE LOG: AD BREAK UNLOCKED
-                if (window.logFirebaseEvent) {
-                    window.logFirebaseEvent('ad_break_unlocked', {});
-                }
-            }
-        }, 1000);
+        window.location.href = `ad.html?index=${this.currentIndex}`;
     }
 
     animateTransition(direction, callback) {
@@ -899,13 +854,12 @@ class ReelApp {
     }
 
     nextReel() {
-        if (this.isAdBreakActive) return;
         if (this.checkScrollLocked()) return;
 
-        // Trigger 3s Ad Break every 6 videos
+        // Trigger 1:20 Ad Lock Page every 6 videos
         this.videosWatched = (this.videosWatched || 0) + 1;
         if (this.videosWatched >= 6) {
-            this.triggerAdBreak();
+            this.redirectToAdPage();
             return;
         }
 

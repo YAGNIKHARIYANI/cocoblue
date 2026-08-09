@@ -76,7 +76,9 @@ class AdRedirectManager {
         if (this.manualAdTriggerBtn) {
             this.manualAdTriggerBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                this.triggerInAppYouTubeAd();
+                if (window.reelApp) {
+                    window.reelApp.redirectToAdPage();
+                }
             });
         }
 

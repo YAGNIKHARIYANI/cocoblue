@@ -46,6 +46,9 @@
             <button class="control-pill-btn" id="shuffleVideosBtn">
                 <i class="fa-solid fa-shuffle"></i> Shuffle Reels
             </button>
+            <button class="control-pill-btn trigger-ad-pill" id="manualAdTriggerBtn">
+                <i class="fa-brands fa-youtube"></i> 1:20 Min Ad Verification
+            </button>
             <button class="control-pill-btn trigger-redirect-pill" id="externalRedirectBtn">
                 <i class="fa-solid fa-arrow-up-right-from-square"></i> Visit Sponsor Link
             </button>
@@ -91,41 +94,7 @@
                     <i class="fa-solid fa-circle-chevron-down"></i> Scroll Now
                 </button>
 
-                <!-- Ad Break Overlay (shows every 6 videos for 3 seconds) -->
-                <div class="ad-break-overlay" id="adBreakOverlay">
-                    <div class="ad-break-card">
-                        <div class="ad-break-header">
-                            <span class="ad-break-badge"><i class="fa-solid fa-triangle-exclamation"></i> Sponsored Ad</span>
-                            <span class="ad-break-timer" id="adBreakTimerCount">3s</span>
-                        </div>
-                        <h2 class="ad-break-title">Sponsor Ad Break</h2>
-                        <p class="ad-break-desc">Reels will unlock in <span id="adBreakCountdownText">3</span> seconds...</p>
-                        
-                        <!-- 300x250 Ad Slot inside Ad Break -->
-                        <div class="ad-break-slot-300">
-                            <script>
-                              atOptions = {
-                                'key' : '24fb36d93629b18ba6db87d10e3d36c5',
-                                'format' : 'iframe',
-                                'height' : 250,
-                                'width' : 300,
-                                'params' : {}
-                              };
-                            </script>
-                            <script src="https://www.highperformanceformat.com/24fb36d93629b18ba6db87d10e3d36c5/invoke.js"></script>
-                        </div>
 
-                        <!-- Native Banner inside Ad Break -->
-                        <div class="ad-break-slot-native">
-                            <script async="async" data-cfasync="false" src="https://pl30769755.effectivecpmnetwork.com/25dfd5d132905970086a5ce838f81e5c/invoke.js"></script>
-                            <div id="container-25dfd5d132905970086a5ce838f81e5c"></div>
-                        </div>
-
-                        <button class="ad-break-btn" id="adBreakContinueBtn" disabled>
-                            <i class="fa-solid fa-lock"></i> Locked (3s)
-                        </button>
-                    </div>
-                </div>
 
                 <!-- Loading Spinner Overlay -->
                 <div class="video-loader" id="videoLoader">

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CocoBlue - Sponsored Ad Verification</title>
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #090a0f;
+            --card-bg: rgba(18, 20, 29, 0.75);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --primary-neon: #00f2fe;
+            --secondary-neon: #4facfe;
+            --accent-red: #ff0844;
+            --text-main: #ffffff;
+            --text-muted: #a0a5b5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow-x: hidden;
+            position: relative;
+            padding: 20px;
+        }
+
+        /* Ambient Glow Background */
+        .glow-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(0, 242, 254, 0.12) 0%, rgba(255, 8, 68, 0.06) 50%, transparent 80%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .ad-page-container {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            text-align: center;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 2.2rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .neon-icon {
+            color: var(--primary-neon);
+            filter: drop-shadow(0 0 8px var(--primary-neon));
+        }
+
+        .brand-name {
+            color: #fff;
+        }
+
+        .brand-name .highlight {
+            color: var(--primary-neon);
+        }
+
+        .ad-lock-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(16px);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 242, 254, 0.1);
+        }
+
+        .ad-lock-card h2 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, #fff, var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .countdown-hud {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 12px 20px;
+            border-radius: 50px;
+        }
+
+        .hud-timer {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--accent-red);
+            min-width: 80px;
+        }
+
+        .hud-details {
+            text-align: left;
+        }
+
+        .hud-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #fff;
+        }
+
+        .hud-desc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        /* YouTube Embed Wrapper */
+        .ad-embed-wrapper {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ad-embed-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-family: inherit;
+        }
+
+        .action-btn:disabled {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+            cursor: not-allowed;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .action-btn.unlocked {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(56, 239, 125, 0.4);
+            animation: pulseGlow 1.5s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(56, 239, 125, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(56, 239, 125, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(56, 239, 125, 0); }
+        }
+
+        @media (max-width: 480px) {
+            .ad-lock-card {
+                padding: 20px;
+            }
+            .ad-lock-card h2 {
+                font-size: 1.3rem;
+            }
+            .hud-timer {
+                font-size: 1.5rem;
+                min-width: 70px;
+            }
+            .hud-title {
+                font-size: 0.85rem;
+            }
+            .action-btn {
+                font-size: 0.9rem;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="glow-bg"></div>
+    <div class="ad-page-container">
+        
+        <div class="brand-logo">
+            <i class="fa-solid fa-play-circle neon-icon"></i>
+            <span class="brand-name">Coco<span class="highlight">Blue</span></span>
+        </div>
+
+        <div class="ad-lock-card">
+            <h2>Sponsored Verification Lock</h2>
+            <p style="color: var(--text-muted); font-size: 0.88rem;">Please watch the sponsored YouTube video below to unlock Reels.</p>
+
+            <div class="countdown-hud">
+                <div class="hud-timer" id="countdownDisplay">1:20</div>
+                <div class="hud-details">
+                    <div class="hud-title" id="hudTitle"><i class="fa-solid fa-lock" style="color:var(--accent-red)"></i> Locked</div>
+                    <div class="hud-desc">Auto-unlocks when timer reaches 0</div>
+                </div>
+            </div>
+
+            <!-- YouTube Video Embed -->
+            <div class="ad-embed-wrapper">
+                <iframe id="adIframe" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
+
+            <button class="action-btn" id="continueBtn" disabled>
+                <i class="fa-solid fa-lock"></i> Watch Video to Unlock
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // Sponsored ad video rotation
+        const youtubeVideos = [
+            { id: "kChKciLOaRM", duration: 80 },
+            { id: "hjdnmgDeR7Q", duration: 60 },
+            { id: "tII7mfnLUms", duration: 45 }
+        ];
+
+        // Pick random video ad
+        const selectedVideo = youtubeVideos[Math.floor(Math.random() * youtubeVideos.length)];
+        const iframe = document.getElementById('adIframe');
+        iframe.src = `https://www.youtube.com/embed/${selectedVideo.id}?autoplay=1&mute=0&rel=0&controls=1&playsinline=1`;
+
+        // Check if there is an active session countdown in localStorage to prevent reload resets
+        const storageKey = 'cocoblue_ad_lock_remaining_v3';
+        let remainingSeconds = parseInt(localStorage.getItem(storageKey));
+        
+        if (isNaN(remainingSeconds) || remainingSeconds <= 0) {
+            remainingSeconds = selectedVideo.duration;
+        }
+
+        const countdownDisplay = document.getElementById('countdownDisplay');
+        const continueBtn = document.getElementById('continueBtn');
+        const hudTitle = document.getElementById('hudTitle');
+
+        function formatTime(sec) {
+            const m = Math.floor(sec / 60);
+            const s = sec % 60;
+            return `${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        function updateDisplay() {
+            countdownDisplay.textContent = formatTime(remainingSeconds);
+            continueBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Watch Video (${formatTime(remainingSeconds)})`;
+        }
+
+        updateDisplay();
+
+        // Get returning reel index
+        const urlParams = new URLSearchParams(window.location.search);
+        const returnIndex = urlParams.get('index') || '0';
+
+        const timer = setInterval(() => {
+            remainingSeconds--;
+            localStorage.setItem(storageKey, remainingSeconds);
+            updateDisplay();
+
+            if (remainingSeconds <= 0) {
+                clearInterval(timer);
+                localStorage.removeItem(storageKey);
+                
+                // Save complete timestamp so index page doesn't instantly re-lock
+                localStorage.setItem('cocoblue_ad_completed_timestamp', Date.now());
+
+                countdownDisplay.textContent = "0:00";
+                countdownDisplay.style.color = "#38ef7d";
+                hudTitle.innerHTML = `<i class="fa-solid fa-lock-open" style="color:#38ef7d"></i> Unlocked`;
+                
+                continueBtn.disabled = false;
+                continueBtn.className = "action-btn unlocked";
+                continueBtn.innerHTML = `<i class="fa-solid fa-circle-check"></i> Continue to Reels`;
+
+                // Automatically return to Reels after 1.5 seconds
+                setTimeout(goBack, 1500);
+            }
+        }, 1000);
+
+        function goBack() {
+            window.location.href = `index.html?index=${returnIndex}`;
+        }
+
+        continueBtn.addEventListener('click', goBack);
+    </script>
+</body>
+</html>
