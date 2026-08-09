@@ -371,63 +371,50 @@ class ReelApp {
     async fetchVideos() {
         this.showLoader(true);
         
-        // Fetch Standard Videos
-        let standardData = [];
-        const stdEndpoints = ['/api/videos', '/api/videos.json', '/data/videos.json', 'data/videos.json'];
-        for (const url of stdEndpoints) {
-            try {
-                const response = await fetch(url);
-                if (response.ok) {
-                    const data = await response.json();
-                    if (Array.isArray(data) && data.length > 0) {
-                        // Filter out any MPD/MP4 videos (if they were already merged by the local server)
-                        // to ensure we have clean list of standard videos
-                        standardData = data.filter(item => !item.isMPD && !item.id.startsWith('mp4_'));
-                        console.log(`[CocoBlue Gujarati] ${standardData.length} standard video links loaded! (source: ${url})`);
-                        break;
-                    }
-                }
-            } catch (err) {}
-        }
-
         // Fetch MP4 Videos
         let mp4Data = [];
-        const mp4Endpoints = ['/data/mp4.json', 'data/mp4.json', '/public/data/mp4.json'];
+        const mp4Endpoints = ['/api/videos', '/data/mp4.json', 'data/mp4.json', '/public/data/mp4.json'];
         for (const url of mp4Endpoints) {
             try {
                 const response = await fetch(url);
                 if (response.ok) {
                     const data = await response.json();
-                    const videosObj = data.videos || {};
-                    const keys = Object.keys(videosObj);
-                    if (keys.length > 0) {
-                        mp4Data = keys.map(key => {
-                            const item = videosObj[key];
-                            return {
-                                id: `mp4_${key}`,
-                                reelId: key,
-                                filename: `${item.post_id || ''}_${item.media_id || ''}.mp4`,
-                                title: `ગુજરાતી શોર્ટ રીલ #${item.post_id || ''}`,
-                                streamUrl: item.url || '',
-                                hdLink: item.url || '',
-                                sdLink: item.url || '',
-                                views: String(Math.floor(Math.random() * 2500000) + 500000),
-                                publishTime: "2026-07-04T00:47:17.000Z",
-                                isMPD: false
-                            };
-                        });
-                        console.log(`[CocoBlue Gujarati] ${mp4Data.length} MP4 video links loaded! (source: ${url})`);
+                    if (Array.isArray(data) && data.length > 0) {
+                        mp4Data = data;
+                        console.log(`[CocoBlue Gujarati] ${mp4Data.length} MP4 videos loaded! (source: ${url})`);
                         break;
+                    } else {
+                        const videosObj = data.videos || {};
+                        const keys = Object.keys(videosObj);
+                        if (keys.length > 0) {
+                            mp4Data = keys.map(key => {
+                                const item = videosObj[key];
+                                return {
+                                    id: `mp4_${key}`,
+                                    reelId: key,
+                                    filename: `${item.post_id || ''}_${item.media_id || ''}.mp4`,
+                                    title: `ગુજરાતી શોર્ટ રીલ #${item.post_id || ''}`,
+                                    streamUrl: item.url || '',
+                                    hdLink: item.url || '',
+                                    sdLink: item.url || '',
+                                    views: String(Math.floor(Math.random() * 2500000) + 500000),
+                                    publishTime: "2026-07-04T00:47:17.000Z",
+                                    isMPD: false
+                                };
+                            });
+                            console.log(`[CocoBlue Gujarati] ${mp4Data.length} MP4 videos loaded from file! (source: ${url})`);
+                            break;
+                        }
                     }
                 }
             } catch (err) {}
         }
 
-        this.rawStandardList = standardData;
+        this.rawStandardList = [];
         this.rawMp4List = mp4Data;
 
-        if (this.rawStandardList.length === 0 && this.rawMp4List.length === 0) {
-            console.error('[CocoBlue Gujarati] Standard and MP4 video data fetch failed!');
+        if (this.rawMp4List.length === 0) {
+            console.error('[CocoBlue Gujarati] MP4 video data fetch failed!');
             if (window.logFirebaseEvent) {
                 window.logFirebaseEvent('api_fetch_error', {});
             }
@@ -442,14 +429,7 @@ class ReelApp {
     }
 
     shuffleQueue() {
-        if ((!this.rawStandardList || this.rawStandardList.length === 0) && (!this.rawMp4List || this.rawMp4List.length === 0)) return;
-
-        // Shuffle Standard list
-        const stdShuffled = [...this.rawStandardList];
-        for (let i = stdShuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [stdShuffled[i], stdShuffled[j]] = [stdShuffled[j], stdShuffled[i]];
-        }
+        if (!this.rawMp4List || this.rawMp4List.length === 0) return;
 
         // Shuffle MP4 list
         const mp4Shuffled = [...this.rawMp4List];
@@ -458,32 +438,9 @@ class ReelApp {
             [mp4Shuffled[i], mp4Shuffled[j]] = [mp4Shuffled[j], mp4Shuffled[i]];
         }
 
-        // Interleave them: 1 MP4, 2 Standard
-        const interleaved = [];
-        if (mp4Shuffled.length > 0 && stdShuffled.length > 0) {
-            let mp4Idx = 0;
-            for (let i = 0; i < stdShuffled.length; i += 2) {
-                // Add 1 MP4 video (wrap around if we run out)
-                interleaved.push(mp4Shuffled[mp4Idx % mp4Shuffled.length]);
-                mp4Idx++;
-
-                // Add up to 2 Standard videos
-                if (i < stdShuffled.length) {
-                    interleaved.push(stdShuffled[i]);
-                }
-                if (i + 1 < stdShuffled.length) {
-                    interleaved.push(stdShuffled[i + 1]);
-                }
-            }
-            this.shuffledQueue = interleaved;
-        } else if (stdShuffled.length > 0) {
-            this.shuffledQueue = stdShuffled;
-        } else {
-            this.shuffledQueue = mp4Shuffled;
-        }
-
+        this.shuffledQueue = mp4Shuffled;
         this.currentIndex = 0;
-        console.log(`[CocoBlue Client] Interleaved queue of size ${this.shuffledQueue.length} generated.`);
+        console.log(`[CocoBlue Client] Queue of size ${this.shuffledQueue.length} generated.`);
     }
 
     shuffleAndRestart() {

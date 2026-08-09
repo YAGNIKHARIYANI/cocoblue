@@ -63,23 +63,10 @@ class ReelRequestHandler(BaseHTTPRequestHandler):
         self.handle_static_file(path)
 
     def handle_api_videos(self):
-        standard_videos = []
-        mpd_videos = []
+        mp4_videos = []
         video_files = []
         
-        # 1. Load standard videos from data/videos.json
-        if os.path.exists(JSON_DATA_PATH):
-            try:
-                with open(JSON_DATA_PATH, 'r', encoding='utf-8') as f:
-                    standard_videos = json.load(f)
-                if isinstance(standard_videos, list):
-                    random.shuffle(standard_videos)
-                    print(f"[API] Loaded and shuffled {len(standard_videos)} standard videos from videos.json")
-            except Exception as e:
-                print(f"[API Error] Failed to read videos.json: {e}")
-
-        # 2. Load MP4 videos from public/data/mp4.json
-        mp4_videos = []
+        # 1. Load MP4 videos from public/data/mp4.json
         if os.path.exists(MP4_DATA_PATH):
             try:
                 with open(MP4_DATA_PATH, 'r', encoding='utf-8') as f:
@@ -104,26 +91,9 @@ class ReelRequestHandler(BaseHTTPRequestHandler):
             except Exception as e:
                 print(f"[API Error] Failed to read mp4.json: {e}")
 
-        # 3. Interleave them in the pattern: 1 MP4, 2 Standard
-        if mp4_videos and standard_videos:
-            mp4_idx = 0
-            for i in range(0, len(standard_videos), 2):
-                # Add 1 MP4 video (wrap around if we run out)
-                video_files.append(mp4_videos[mp4_idx % len(mp4_videos)])
-                mp4_idx += 1
-                
-                # Add up to 2 standard videos
-                if i < len(standard_videos):
-                    video_files.append(standard_videos[i])
-                if i + 1 < len(standard_videos):
-                    video_files.append(standard_videos[i + 1])
-            print(f"[API] Constructed interleaved queue of {len(video_files)} videos (1 MP4, 2 Standard pattern)")
-        elif standard_videos:
-            video_files = standard_videos
-            print(f"[API Fallback] Serving {len(video_files)} standard videos only")
-        elif mp4_videos:
+        if mp4_videos:
             video_files = mp4_videos
-            print(f"[API Fallback] Serving {len(video_files)} MP4 videos only")
+            print(f"[API] Serving {len(video_files)} MP4 videos")
 
         # Fallback to local ./videos directory if both JSONs are missing or empty
         if not video_files and os.path.exists(VIDEOS_DIR):
